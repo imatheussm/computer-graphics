@@ -1,4 +1,6 @@
 <canvas id="c" width="501px" height="381px" ></canvas>
+<button id="bresenham_button" type="button">Bresenham</button>
+
 <script>
 
 var c_canvas = document.getElementById("c");
@@ -91,7 +93,6 @@ var y0 = 0;
 
 function second_click(event) {
     var pos = getMousePos(c_canvas,event);
-    console.log(pos);
     var start_sqr_pos = posToSqr(pos.x, pos.y);
     paintSquare(start_sqr_pos[0], start_sqr_pos[1]);
     var x1 = start_sqr_pos[0];
@@ -102,12 +103,8 @@ function second_click(event) {
   }
 
 function first_click(event) {
-		console.log(context.fillStyle);
     makeGrid();
-    
-    
     var pos = getMousePos(c_canvas,event);
-    console.log(pos);
     var start_sqr_pos = posToSqr(pos.x, pos.y);
     paintSquare(start_sqr_pos[0], start_sqr_pos[1]);
     x0 = start_sqr_pos[0];
@@ -116,7 +113,10 @@ function first_click(event) {
     c_canvas.addEventListener("click", second_click);
 }
  
+function activate_bresenham(event){
+    c_canvas.addEventListener("click", first_click);
+}
 
- 
-c_canvas.addEventListener("click", first_click);
+var bresenham_button = document.getElementById("bresenham_button");
+bresenham_button.addEventListener("click", activate_bresenham); 
 </script>
