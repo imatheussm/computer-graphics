@@ -120,8 +120,12 @@ class Circle {
     center = [0, 0];
     radius = 0;
 
+    static showCenterMessage(){
+        document.getElementById("instructions").innerHTML = "Choose a point to define the CENTER of the circle.";
+    }
+
     static centerEvent(event){
-        document.getElementById("instructions").innerHTML = "Choose another point to DEFINE the RADIUS of the circle.";
+        document.getElementById("instructions").innerHTML = "Choose another point to define the RADIUS of the circle.";
         var circle_center = getCoordinates(event);
         Circle.center = circle_center;
         paintSquare(circle_center[0], circle_center[1]);
@@ -130,11 +134,13 @@ class Circle {
     }
 
     static radiusEvent(event){
+        Circle.showCenterMessage();
         var border = getCoordinates(event);
         var x_dist = Math.pow(Circle.center[0] - border[0], 2);
         var y_dist = Math.pow(Circle.center[1] - border[1], 2);
         Circle.radius = parseInt(Math.sqrt(x_dist + y_dist));
         $( "canvas" ).off("click");
+        $( "canvas" ).on("click", Circle.centerEvent);
         Circle.draw();
     }
 
@@ -169,7 +175,7 @@ class Circle {
     }
 
     static initializeCircle() {
-        document.getElementById("instructions").innerHTML = "Choose a point to DEFINE the CENTER of the circle.";
+        Circle.showCenterMessage();
         $( "canvas" ).off("click");
         $( "canvas" ).on("click", Circle.centerEvent);
     }  
@@ -188,12 +194,10 @@ class MultiLine {
         if (event.which == 13){
             MultiLine.draw();
         }
-        console.log(MultiLine.points.length);
     }
 
     static draw(){
         var num_points = MultiLine.points.length;
-        console.log(num_points);
         for (var i = 0; i < num_points - 1; i++){
             initialCoordinates = MultiLine.points[i];
             finalCoordinates = MultiLine.points[i+1];
