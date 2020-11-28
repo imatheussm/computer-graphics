@@ -18,6 +18,10 @@ body {
     background-color: #3c3f41;
 }
 
+#about {
+    float:right;
+}
+
 #canvas-area {
     display: block;
     width: 75%;
@@ -33,4 +37,15 @@ body {
 #canvas {
     width: 100%;
     height: 100%;
+}
+
+p {
+
+    padding-top: 3vh;
+    color:#ffffff;
+    text-align: center;
+}
+
+a:visited {
+  color: green;
 }

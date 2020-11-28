@@ -7,7 +7,7 @@ const context = canvas.getContext("2d");
 context.translate(0.5, 0.5);
 
 function resetInstructions(){
-    document.getElementById("instructions").innerHTML = "Choose an option.";
+    document.getElementById("instructions").innerHTML = "Choose an Option.";
 }
 
 
