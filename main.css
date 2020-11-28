@@ -5,19 +5,25 @@
     padding: 0;
 }
 
+h1, h2 {
+    text-align:center;
+    color:#ffffff;
+    padding-top:1vh;
+}
+
 body {
     position: relative;
     max-width: 100%;
-    padding-top: 100vh;
+    padding-top: 5vh;
     background-color: #3c3f41;
 }
 
 #canvas-area {
     display: block;
-    position: absolute;
     width: 75%;
     height: 75%;
     margin: auto;
+    padding-top: 5vh;
     top: 0;
     bottom: 0;
     left: 0;

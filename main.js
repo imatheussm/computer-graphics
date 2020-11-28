@@ -6,7 +6,13 @@ const context = canvas.getContext("2d");
 
 context.translate(0.5, 0.5);
 
+function resetInstructions(){
+    document.getElementById("instructions").innerHTML = "Choose an option.";
+}
+
+
 function initializeCanvas() {
+    resetInstructions();
     if (typeof pixelSize === 'undefined') {
         pixelSize = 20;
     }
@@ -22,6 +28,7 @@ function initializeButtons() {
 }
 
 function activateBresenham() {
+    document.getElementById("instructions").innerHTML = "Choose two points to draw a line.";
     $( "canvas" ).on("click", firstClick);
 }
 
@@ -116,6 +123,7 @@ class Circle {
     radius = 0;
 
     static centerEvent(event){
+        document.getElementById("instructions").innerHTML = "Choose another point to DEFINE the RADIUS of the circle.";
         var circle_center = getCoordinates(event);
         Circle.center = circle_center;
         paintSquare(circle_center[0], circle_center[1]);
@@ -163,6 +171,7 @@ class Circle {
     }
 
     static initializeCircle() {
+        document.getElementById("instructions").innerHTML = "Choose a point to DEFINE the CENTER of the circle.";
         $( "canvas" ).off("click");
         $( "canvas" ).on("click", Circle.centerEvent);
     }  
@@ -187,10 +196,8 @@ class MultiLine {
 
     static draw(){
         var num_points = MultiLine.points.length;
-        console.log(num_points);
         for (var i = 0; i < num_points - 1; i++){
             initialCoordinates = MultiLine.points[i];
-            console.log(initialCoordinates);
             finalCoordinates = MultiLine.points[i+1];
             drawLine();
         }
@@ -199,6 +206,7 @@ class MultiLine {
     }
 
     static initialize() {
+        document.getElementById("instructions").innerHTML = "Choose at least 2 points, press ENTER to draw lines.";
         $( "canvas" ).off("click");
         $( "canvas" ).on("click", MultiLine.pointsEvent);
         $(document).on("keypress", MultiLine.enterKeyEvent);
