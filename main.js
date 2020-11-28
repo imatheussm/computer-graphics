@@ -16,13 +16,12 @@ function initializeCanvas() {
 
 function initializeButtons() {
     $( "#bresenham-button" ).on("click", activateBresenham);
+    $( "#circle-button" ).on("click", Circle.getCenter);
     $( "#clear-button" ).on("click", initializeCanvas);
 }
 
 function activateBresenham() {
     $( "canvas" ).on("click", firstClick);
-
-    //    canvas.addEventListener("click", firstClick);
 }
 
 function drawPixelGrid(pixelSize) {
@@ -110,7 +109,53 @@ function drawLine() {
     }
 }
 
+
+class Circle {
+    center = [0, 0];
+    radius = 0;
+
+    static centerEvent(event){
+        var circle_center = getCoordinates(event);
+        Circle.center = circle_center;
+        paintSquare(circle_center[0], circle_center[1]);
+        $( "canvas" ).off("click");
+        $( "canvas" ).on("click", Circle.radiusEvent);
+    }
+
+    static radiusEvent(event){
+        var border = getCoordinates(event);
+        var x_dist = Math.pow(Circle.center[0] - border[0], 2);
+        var y_dist = Math.pow(Circle.center[1] - border[1], 2);
+        Circle.radius = Math.sqrt(x_dist + y_dist);
+        paintSquare(border[0], border[1]);
+        console.log(Circle.radius);
+        $( "canvas" ).off("click");
+        Circle.draw();
+    }
+
+    static draw(){
+        var x = 0;
+        var y = Circle.radius;
+        var error = -y;
+        while (x <= y){
+            error += 2*x + 1;
+            x += 1;
+            if (error >= 0){
+                error += 2 - 2*y;
+                y -= 1;
+            }
+            paintSquare(x + Circle.center[0], y + Circle.center[1]);
+
+        }
+
+    }
+
+    static getCenter() {
+        $( "canvas" ).off("click");
+        $( "canvas" ).on("click", Circle.centerEvent);
+    }  
+}
+
 $( document ).on("DOMContentLoaded", initializeCanvas);
 $( document ).on("DOMContentLoaded", initializeButtons);
-
 $( window ).on("resize", initializeCanvas);
