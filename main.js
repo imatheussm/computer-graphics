@@ -15,16 +15,14 @@ function initializeCanvas() {
 }
 
 function initializeButtons() {
-    let lineButton = document.getElementById("bresenham-button");
-    let clearButton = document.getElementById("clear-button");
-
-
-    lineButton.addEventListener("click", activateBresenham);
-    clearButton.addEventListener("click", initializeCanvas);
+    $( "#bresenham-button" ).on("click", activateBresenham);
+    $( "#clear-button" ).on("click", initializeCanvas);
 }
 
 function activateBresenham() {
-    canvas.addEventListener("click", firstClick);
+    $( "canvas" ).on("click", firstClick);
+
+    //    canvas.addEventListener("click", firstClick);
 }
 
 function drawPixelGrid(pixelSize) {
@@ -77,8 +75,8 @@ function firstClick(event) {
 
     paintSquare(initialCoordinates[0], initialCoordinates[1]);
 
-    canvas.removeEventListener("click", firstClick);
-    canvas.addEventListener("click", secondClick);
+    $( "canvas" ).off("click");
+    $( "canvas" ).on("click", secondClick);
 }
 
 function secondClick(event) {
@@ -86,8 +84,8 @@ function secondClick(event) {
 
     drawLine();
 
-    canvas.removeEventListener("click", secondClick);
-    canvas.addEventListener("click", firstClick);
+    $( "canvas" ).off("click");
+    $( "canvas" ).on("click", firstClick);
 }
 
 function drawLine() {
@@ -112,6 +110,7 @@ function drawLine() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", initializeCanvas);
-document.addEventListener("DOMContentLoaded", initializeButtons);
-window.addEventListener("resize", initializeCanvas);
+$( document ).on("DOMContentLoaded", initializeCanvas);
+$( document ).on("DOMContentLoaded", initializeButtons);
+
+$( window ).on("resize", initializeCanvas);
