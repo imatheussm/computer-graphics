@@ -78,8 +78,6 @@ function paintSquare(x, y) {
 function firstClick(event) {
     initialCoordinates = getCoordinates(event);
 
-    console.log(initialCoordinates);
-
     paintSquare(initialCoordinates[0], initialCoordinates[1]);
 
     $( "canvas" ).off("click");
@@ -189,13 +187,13 @@ class MultiLine {
     static enterKeyEvent(event){
         if (event.which == 13){
             MultiLine.draw();
-            $ ("canvas").off("click");
-            $ (document).off('keypress');
         }
+        console.log(MultiLine.points.length);
     }
 
     static draw(){
         var num_points = MultiLine.points.length;
+        console.log(num_points);
         for (var i = 0; i < num_points - 1; i++){
             initialCoordinates = MultiLine.points[i];
             finalCoordinates = MultiLine.points[i+1];
@@ -206,6 +204,7 @@ class MultiLine {
     }
 
     static initialize() {
+        MultiLine.points = [];
         document.getElementById("instructions").innerHTML = "Choose at least 2 points, press ENTER to draw lines.";
         $( "canvas" ).off("click");
         $( "canvas" ).on("click", MultiLine.pointsEvent);
