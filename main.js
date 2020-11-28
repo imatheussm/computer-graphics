@@ -16,7 +16,7 @@ function initializeCanvas() {
 
 function initializeButtons() {
     $( "#bresenham-button" ).on("click", activateBresenham);
-    $( "#circle-button" ).on("click", Circle.getCenter);
+    $( "#circle-button" ).on("click", Circle.initializeCircle);
     $( "#clear-button" ).on("click", initializeCanvas);
 }
 
@@ -126,31 +126,42 @@ class Circle {
         var border = getCoordinates(event);
         var x_dist = Math.pow(Circle.center[0] - border[0], 2);
         var y_dist = Math.pow(Circle.center[1] - border[1], 2);
-        Circle.radius = Math.sqrt(x_dist + y_dist);
-        paintSquare(border[0], border[1]);
-        console.log(Circle.radius);
+        Circle.radius = parseInt(Math.sqrt(x_dist + y_dist));
         $( "canvas" ).off("click");
         Circle.draw();
     }
 
-    static draw(){
-        var x = 0;
-        var y = Circle.radius;
-        var error = -y;
-        while (x <= y){
-            error += 2*x + 1;
-            x += 1;
-            if (error >= 0){
-                error += 2 - 2*y;
-                y -= 1;
-            }
-            paintSquare(x + Circle.center[0], y + Circle.center[1]);
+    static drawEight(x, y){
+        paintSquare(x + Circle.center[0], y + Circle.center[1]);
+        paintSquare(y + Circle.center[0], x + Circle.center[1]);
+        paintSquare(y + Circle.center[0], -x + Circle.center[1]);
+        paintSquare(x + Circle.center[0], -y + Circle.center[1]);
+        paintSquare(-x + Circle.center[0], -y + Circle.center[1]);
+        paintSquare(-y + Circle.center[0], -x + Circle.center[1]);
+        paintSquare(-y + Circle.center[0], x + Circle.center[1]);
+        paintSquare(-x + Circle.center[0], y + Circle.center[1]);
+    }
 
+    static draw(){
+        var x = Circle.radius;
+        var y = 0;
+        var error = 1-x;
+        while (x >= y){
+            Circle.drawEight(x, y);
+            y++;
+
+            if (error < 0) {
+                error += 2 * y + 1;
+             }
+            else {
+                x--;
+                error += 2 * (y - x + 1);
+            }
         }
 
     }
 
-    static getCenter() {
+    static initializeCircle() {
         $( "canvas" ).off("click");
         $( "canvas" ).on("click", Circle.centerEvent);
     }  
