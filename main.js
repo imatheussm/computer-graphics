@@ -17,6 +17,7 @@ function initializeCanvas() {
 function initializeButtons() {
     $( "#bresenham-button" ).on("click", activateBresenham);
     $( "#circle-button" ).on("click", Circle.initializeCircle);
+    $( "#multi-line-button" ).on("click", MultiLine.initialize);
     $( "#clear-button" ).on("click", initializeCanvas);
 }
 
@@ -164,6 +165,43 @@ class Circle {
     static initializeCircle() {
         $( "canvas" ).off("click");
         $( "canvas" ).on("click", Circle.centerEvent);
+    }  
+}
+
+class MultiLine {
+    static points = new Array();
+
+    static pointsEvent(event){
+        var point = getCoordinates(event);
+        paintSquare(point[0], point[1]);
+        MultiLine.points.push(point);
+    }
+
+    static enterKeyEvent(event){
+        if (event.which == 13){
+            MultiLine.draw();
+            $ ("canvas").off("click");
+            $ (document).off('keypress');
+        }
+    }
+
+    static draw(){
+        var num_points = MultiLine.points.length;
+        console.log(num_points);
+        for (var i = 0; i < num_points - 1; i++){
+            initialCoordinates = MultiLine.points[i];
+            console.log(initialCoordinates);
+            finalCoordinates = MultiLine.points[i+1];
+            drawLine();
+        }
+        MultiLine.points = [];
+
+    }
+
+    static initialize() {
+        $( "canvas" ).off("click");
+        $( "canvas" ).on("click", MultiLine.pointsEvent);
+        $(document).on("keypress", MultiLine.enterKeyEvent);
     }  
 }
 
