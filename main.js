@@ -1,117 +1,117 @@
-var c_canvas = document.getElementById("c");
-var context = c_canvas.getContext("2d");
+let canvas = document.getElementById("canvas");
+let initialCoordinates, finalCoordinates, pixelSize;
 
-function makeGrid(){
-context.fillStyle = "white";
-context.fillRect(0,0,501,381);
+const dpi     = window.devicePixelRatio;
+const context = canvas.getContext("2d");
 
-for (var x = 0.5; x < 501; x += 20) {
-  context.moveTo(x, 0);
-  context.lineTo(x, 381);
+context.translate(0.5, 0.5);
+
+function initializeCanvas() {
+    if (typeof pixelSize === 'undefined') {
+        pixelSize = 20;
+    }
+
+    drawPixelGrid(pixelSize);
 }
 
-for (var y = 0.5; y < 381; y += 20) {
-  context.moveTo(0, y);
-  context.lineTo(500, y);
+function initializeButtons() {
+    let lineButton = document.getElementById("bresenham-button");
+    let clearButton = document.getElementById("clear-button");
+
+
+    lineButton.addEventListener("click", activateBresenham);
+    clearButton.addEventListener("click", initializeCanvas);
 }
 
-context.strokeStyle = "#ddd";
-context.stroke();
+function activateBresenham() {
+    canvas.addEventListener("click", firstClick);
 }
 
-makeGrid();
+function drawPixelGrid(pixelSize) {
+    let height = canvas.offsetHeight * dpi;
+    let width  = canvas.offsetWidth * dpi;
 
-function getNearestSquare(x, y) {
-if (x < 0 || y < 0) return null;
-    x = (Math.floor(x / 20) * 20) + 0.5
-    y = (Math.floor(y / 20) * 20) + 0.5
-    return {x: x, y: y};
+
+    canvas.setAttribute('height', height.toString());
+    canvas.setAttribute('width', width.toString());
+
+    context.fillStyle   = "#2b2b2b";
+    context.strokeStyle = "#3c3c3c";
+
+    for (let x = 0; x < width; x += pixelSize) {
+        context.moveTo(x, 0);
+        context.lineTo(x, height);
+    }
+
+    for (let y = 0; y < height; y += pixelSize) {
+        context.moveTo(0, y);
+        context.lineTo(width, y);
+    }
+
+    context.fillRect(0, 0, width, height);
+    context.stroke();
 }
 
-function line(x0, y0, x1, y1) {
-   var dx = Math.abs(x1 - x0);
-   var dy = Math.abs(y1 - y0);
-   var sx = (x0 < x1) ? 1 : -1;
-   var sy = (y0 < y1) ? 1 : -1;
-   var err = dx - dy;
+function getCoordinates(event) {
+    let rectangle = canvas.getBoundingClientRect();
 
-   while(true) {
-      setPixel(x0, y0); // Do what you need to for this
+    let x = event.clientX - rectangle.left;
+    let y = event.clientY - rectangle.top;
 
-      if ((x0 === x1) && (y0 === y1)) break;
-      var e2 = 2*err;
-      if (e2 > -dy) { err -= dy; x0  += sx; }
-      if (e2 < dx) { err += dx; y0  += sy; }
-   }
+
+    return [Math.floor(x / pixelSize), Math.floor(y / pixelSize)];
 }
 
-function paintSquare(x, y){
-	x = x*20;
-  y = y*20;
-  context.fillStyle="#FF0000";
-	context.fillRect(x,y,20,20);
+function paintSquare(x, y) {
+    x *= pixelSize;
+    y *= pixelSize;
+
+    context.fillStyle="#ff0000";
+    context.fillRect(x, y, pixelSize, pixelSize);
 }
 
-function posToSqr(x, y){
-	return [Math.floor(x/20), Math.floor(y/20)];
+function firstClick(event) {
+    initialCoordinates = getCoordinates(event);
+
+    console.log(initialCoordinates);
+
+    paintSquare(initialCoordinates[0], initialCoordinates[1]);
+
+    canvas.removeEventListener("click", firstClick);
+    canvas.addEventListener("click", secondClick);
 }
 
-function line(x0, y0, x1, y1) {
-   var dx = Math.abs(x1 - x0);
-   var dy = Math.abs(y1 - y0);
-   var sx = (x0 < x1) ? 1 : -1;
-   var sy = (y0 < y1) ? 1 : -1;
-   var err = dx - dy;
+function secondClick(event) {
+    finalCoordinates = getCoordinates(event);
 
-   while(true) {
-      paintSquare(x0, y0); // Do what you need to for this
+    drawLine();
 
-      if ((x0 === x1) && (y0 === y1)) break;
-      var e2 = 2*err;
-      if (e2 > -dy) { err -= dy; x0  += sx; }
-      if (e2 < dx) { err += dx; y0  += sy; }
-   }
+    canvas.removeEventListener("click", secondClick);
+    canvas.addEventListener("click", firstClick);
 }
 
- function getMousePos(canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
-        return {
-          x: evt.clientX - rect.left,
-          y: evt.clientY - rect.top
-        };
-      }
+function drawLine() {
+    let [x0, y0] = initialCoordinates;
+    let [x1, y1] = finalCoordinates;
+
+    let [deltaX, deltaY] = [Math.abs(x1 - x0), Math.abs(y1 - y0)];
+    let [signalX, signalY] = [(x0 < x1 ? 1 : -1), (y0 < y1 ? 1 : -1)];
+
+    let error = deltaX - deltaY;
 
 
-var x0 = 0;
-var y0 = 0;
+    while(true) {
+        if ((x0 === x1) && (y0 === y1)) break;
 
+        let twoTimesError = 2 * error;
 
-function second_click(event) {
-    var pos = getMousePos(c_canvas,event);
-    var start_sqr_pos = posToSqr(pos.x, pos.y);
-    paintSquare(start_sqr_pos[0], start_sqr_pos[1]);
-    var x1 = start_sqr_pos[0];
-    var y1 = start_sqr_pos[1];
-    line(x0, y0, x1, y1);
-    c_canvas.removeEventListener("click", second_click);
-    c_canvas.addEventListener("click", first_click);
-  }
+        if (twoTimesError > -deltaY) { error -= deltaY; x0 += signalX; }
+        if (twoTimesError <  deltaX) { error += deltaX; y0 += signalY; }
 
-function first_click(event) {
-    makeGrid();
-    var pos = getMousePos(c_canvas,event);
-    var start_sqr_pos = posToSqr(pos.x, pos.y);
-    paintSquare(start_sqr_pos[0], start_sqr_pos[1]);
-    x0 = start_sqr_pos[0];
-      y0 = start_sqr_pos[1];
-    c_canvas.removeEventListener("click", first_click);
-    c_canvas.addEventListener("click", second_click);
-}
- 
-function activate_bresenham(event){
-    c_canvas.addEventListener("click", first_click);
+        paintSquare(x0, y0);
+    }
 }
 
-var bresenham_button = document.getElementById("bresenham_button");
-bresenham_button.addEventListener("click", activate_bresenham); 
-
+document.addEventListener("DOMContentLoaded", initializeCanvas);
+document.addEventListener("DOMContentLoaded", initializeButtons);
+window.addEventListener("resize", initializeCanvas);
