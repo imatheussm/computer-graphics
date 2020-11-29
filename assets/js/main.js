@@ -1,6 +1,7 @@
 let [canvas, instructions] = [$("#canvas"), $("#instructions")];
 let initialCoordinates, finalCoordinates, pixelSize;
 
+const blue_color = "#0099cc"
 const dpi     = window.devicePixelRatio;
 const context = canvas[0].getContext("2d");
 
@@ -160,7 +161,7 @@ class Circle {
 
         const circle_center = getCoordinates(event);
         Circle.center = circle_center;
-        paintSquare(circle_center[0], circle_center[1]);
+        paintSquare(circle_center[0], circle_center[1], blue_color);
 
         canvas.off("click");
         canvas.on("click", Circle.radiusEvent);
@@ -266,7 +267,7 @@ class Curve {
 
     static controlPointsEvent(event){
         var point = getCoordinates(event);
-        paintSquare(point[0], point[1], "#0099cc");
+        paintSquare(point[0], point[1], blue_color);
         Curve.control_points.push(point);
     }
     
