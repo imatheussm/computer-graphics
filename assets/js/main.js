@@ -215,7 +215,6 @@ class Curve {
     static resetInstructions(event){
         instructions.html("Choose INITIAL point of the curve.");
         instructions.css("visibility", "visible");
-
     }
 
     static controlPointsEvent(event){
@@ -263,8 +262,9 @@ class Curve {
         if (event.which === 13){
             Curve.draw();
         }
-        Curve.initialize();
         canvas.off("click");
+        Curve.initialize();
+        //canvas.off("click");
     }
 
     static belzierPoint(t){
@@ -337,12 +337,13 @@ class MultiLine {
     }
 
     static initialize() {
+        canvas.off("click");
+        $(document).off("keypress");
         instructions.html("Choose at least 2 points, press ENTER to draw lines.");
         instructions.css("visibility", "visible");
 
         MultiLine.points = [];
 
-        canvas.off("click");
         canvas.on("click", MultiLine.pointsEvent);
 
         $(document).on("keypress", MultiLine.enterKeyEvent);
