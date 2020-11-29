@@ -1,25 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
     <head>
         <meta charset="UTF-8">
         <title>paint.io</title>
 
+        <link rel="stylesheet" type="text/css" href="assets/css/uikit.min.css">
         <link rel="stylesheet" type="text/css" href="assets/css/main.css">
     </head>
-    <body>
-        <h1>Computer Graphics Project</h1>
-        <input id='about' type="button" onclick="location.href='about.html';" value="About" />
-
-        <h2 id="instructions"> Choose an Option.</h2>
-        <div id="canvas-area">
+    <body class="uk-height-viewport">
+        <header class="uk-navbar-container">
+            <nav class="uk-container" uk-navbar>
+                <div class="uk-navbar-left">
+                    <a class="uk-navbar-item uk-logo" href="#">paint.io</a>
+                </div>
+                <div class="uk-navbar-right">
+<!--                    <ul class="uk-navbar-nav">-->
+<!--                        <li class="uk-active"><a href="#">Active</a></li>-->
+<!--                        <li>-->
+<!--                            <a href="#">Parent</a>-->
+<!--                            <div class="uk-navbar-dropdown">-->
+<!--                                <ul class="uk-nav uk-navbar-dropdown-nav">-->
+<!--                                    <li class="uk-active"><a href="#">Active</a></li>-->
+<!--                                    <li><a href="#">Item</a></li>-->
+<!--                                    <li><a href="#">Item</a></li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+                    <ul class="uk-navbar-nav">
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <main class="uk-container">
+            <div class="uk-child-width-1-2 uk-margin-top uk-margin-bottom" uk-grid>
+                <div>
+                    <h2>Algorithms:</h2>
+                </div>
+                <div>
+                    <div class="uk-align-right">
+                        <div class="uk-button-group">
+<!--                            <button id="bresenham-button" class="uk-button uk-button-secondary">Line</button>-->
+                            <button id="multi-line-button" class="uk-button uk-button-secondary">Lines</button>
+                            <button id="circle-button" class="uk-button uk-button-secondary">Circle</button>
+                            <button id="curve-button" class="uk-button uk-button-secondary">Curve</button>
+                            <button id="clear-button" class="uk-button uk-button-danger">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h4 class="uk-text-center uk-margin-top" id="instructions">Choose an option.</h4>
             <canvas id="canvas">Your browser doesn't seem to support canvas elements.</canvas>
-            <button id="bresenham-button" type="button">Line</button>
-            <button id="circle-button" type="button">Circle</button>
-            <button id="curve-button" type="button">Curve</button>
-            <button id="multi-line-button" type="button">Multi-Line</button>
-            <button id="clear-button" type="button">Clear</button>
-        </div>
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        </main>
+        <footer>
+
+        </footer>
+
+        <script src="assets/js/jquery-3.5.1.min.js"></script>
+        <script src="assets/js/uikit.min.js"></script>
+        <script src="assets/js/uikit-icons.min.js"></script>
         <script src="assets/js/main.js"></script>
     </body>
 </html>

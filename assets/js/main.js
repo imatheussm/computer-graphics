@@ -1,13 +1,14 @@
-let canvas = document.getElementById("canvas");
+let [canvas, instructions] = [$("#canvas"), $("#instructions")];
 let initialCoordinates, finalCoordinates, pixelSize;
 
 const dpi     = window.devicePixelRatio;
-const context = canvas.getContext("2d");
+const context = canvas[0].getContext("2d");
 
 context.translate(0.5, 0.5);
 
 function resetInstructions(){
-    document.getElementById("instructions").innerHTML = "Choose an Option.";
+    instructions.innerHTML = "Choose an option.";
+    instructions.css("visibility", "hidden");
 }
 
 
@@ -21,14 +22,16 @@ function initializeCanvas() {
 }
 
 function initializeButtons() {
-    $( "#bresenham-button" ).on("click", activateBresenham);
-    $( "#circle-button" ).on("click", Circle.initializeCircle);
-    $( "#multi-line-button" ).on("click", MultiLine.initialize);
-    $( "#clear-button" ).on("click", initializeCanvas);
+    $("#bresenham-button").on("click", activateBresenham);
+    $("#circle-button").on("click", Circle.initializeCircle);
+    $("#multi-line-button").on("click", MultiLine.initialize);
+    $("#clear-button").on("click", initializeCanvas);
 }
 
 function activateBresenham() {
-    document.getElementById("instructions").innerHTML = "Choose two points to draw a line.";
+    instructions.innerHTML = "Choose two points to draw a line.";
+    instructions.css("visibility", "visible");
+
     $( "canvas" ).on("click", firstClick);
 }
 
@@ -80,8 +83,8 @@ function firstClick(event) {
 
     paintSquare(initialCoordinates[0], initialCoordinates[1]);
 
-    $( "canvas" ).off("click");
-    $( "canvas" ).on("click", secondClick);
+    canvas.off("click");
+    canvas.on("click", secondClick);
 }
 
 function secondClick(event) {
@@ -89,8 +92,8 @@ function secondClick(event) {
 
     drawLine();
 
-    $( "canvas" ).off("click");
-    $( "canvas" ).on("click", firstClick);
+    canvas.off("click");
+    canvas.on("click", firstClick);
 }
 
 function drawLine() {
@@ -121,16 +124,20 @@ class Circle {
     radius = 0;
 
     static showCenterMessage(){
-        document.getElementById("instructions").innerHTML = "Choose a point to define the CENTER of the circle.";
+        instructions.innerHTML = "Choose a point to define the CENTER of the circle.";
+        instructions.css("visibility", "visible");
     }
 
     static centerEvent(event){
-        document.getElementById("instructions").innerHTML = "Choose another point to define the RADIUS of the circle.";
+        instructions.innerHTML = "Choose another point to define the RADIUS of the circle.";
+        instructions.css("visibility", "visible");
+
         var circle_center = getCoordinates(event);
         Circle.center = circle_center;
         paintSquare(circle_center[0], circle_center[1]);
-        $( "canvas" ).off("click");
-        $( "canvas" ).on("click", Circle.radiusEvent);
+
+        canvas.off("click");
+        canvas.on("click", Circle.radiusEvent);
     }
 
     static radiusEvent(event){
@@ -139,8 +146,10 @@ class Circle {
         var x_dist = Math.pow(Circle.center[0] - border[0], 2);
         var y_dist = Math.pow(Circle.center[1] - border[1], 2);
         Circle.radius = parseInt(Math.sqrt(x_dist + y_dist));
-        $( "canvas" ).off("click");
-        $( "canvas" ).on("click", Circle.centerEvent);
+
+        canvas.off("click");
+        canvas.on("click", Circle.centerEvent);
+
         Circle.draw();
     }
 
@@ -176,8 +185,9 @@ class Circle {
 
     static initializeCircle() {
         Circle.showCenterMessage();
-        $( "canvas" ).off("click");
-        $( "canvas" ).on("click", Circle.centerEvent);
+
+        canvas.off("click");
+        canvas.on("click", Circle.centerEvent);
     }  
 }
 
@@ -210,12 +220,14 @@ class MultiLine {
     static initialize() {
         MultiLine.points = [];
         document.getElementById("instructions").innerHTML = "Choose at least 2 points, press ENTER to draw lines.";
-        $( "canvas" ).off("click");
-        $( "canvas" ).on("click", MultiLine.pointsEvent);
+
+        canvas.off("click");
+        canvas.on("click", MultiLine.pointsEvent);
+
         $(document).on("keypress", MultiLine.enterKeyEvent);
     }  
 }
 
-$( document ).on("DOMContentLoaded", initializeCanvas);
-$( document ).on("DOMContentLoaded", initializeButtons);
-$( window ).on("resize", initializeCanvas);
+$(document).on("DOMContentLoaded", initializeCanvas);
+$(document).on("DOMContentLoaded", initializeButtons);
+$(window).on("resize", initializeCanvas);
