@@ -271,13 +271,13 @@ class Curve {
     }
     
     static enterKeyEvent(event){
-        canvas..off("click");
+        canvas.off("click");
         Curve.control_points.push(Curve.final_point);
         if (event.which === 13){
             Curve.draw();
         }
         Curve.initialize();
-        $( "canvas" ).off("click");
+        canvas.off("click");
     }
 
     static belzierPoint(t){
