@@ -1,13 +1,14 @@
-let canvas = document.getElementById("canvas");
+let [canvas, instructions] = [$("#canvas"), $("#instructions")];
 let initialCoordinates, finalCoordinates, pixelSize;
 
 const dpi     = window.devicePixelRatio;
-const context = canvas.getContext("2d");
+const context = canvas[0].getContext("2d");
 
 context.translate(0.5, 0.5);
 
 function resetInstructions(){
-    document.getElementById("instructions").innerHTML = "Choose an Option.";
+    instructions.html("Choose an option.");
+    instructions.css("visibility", "hidden");
 }
 
 
@@ -36,7 +37,8 @@ function scalarMult(array, scalar){
 }
 
 function initializeCanvas() {
-    resetInstructions();
+    // resetInstructions();
+    
     if (typeof pixelSize === 'undefined') {
         pixelSize = 20;
     }
@@ -45,25 +47,27 @@ function initializeCanvas() {
 }
 
 function initializeButtons() {
-    $( "#bresenham-button" ).on("click", activateBresenham);
-    $( "#circle-button" ).on("click", Circle.initializeCircle);
-    $( "#curve-button" ).on("click", Curve.initialize);
-    $( "#multi-line-button" ).on("click", MultiLine.initialize);
-    $( "#clear-button" ).on("click", initializeCanvas);
+    $("#bresenham-button").on("click", activateBresenham);
+    $("#circle-button").on("click", Circle.initializeCircle);
+    $("#curve-button").on("click", Curve.initialize);
+    $("#multi-line-button").on("click", MultiLine.initialize);
+    $("#clear-button").on("click", initializeCanvas);
 }
 
 function activateBresenham() {
-    document.getElementById("instructions").innerHTML = "Choose two points to draw a line.";
-    $( "canvas" ).on("click", firstClick);
+    instructions.html("Choose two points to draw a line.");
+    instructions.css("visibility", "visible");
+
+    canvas.on("click", firstClick);
 }
 
 function drawPixelGrid(pixelSize) {
-    let height = canvas.offsetHeight * dpi;
-    let width  = canvas.offsetWidth * dpi;
+    let height = canvas[0].offsetHeight * dpi;
+    let width  = canvas[0].offsetWidth * dpi;
 
 
-    canvas.setAttribute('height', height.toString());
-    canvas.setAttribute('width', width.toString());
+    canvas[0].setAttribute('height', height.toString());
+    canvas[0].setAttribute('width', width.toString());
 
     context.fillStyle   = "#2b2b2b";
     context.strokeStyle = "#3c3c3c";
@@ -83,7 +87,7 @@ function drawPixelGrid(pixelSize) {
 }
 
 function getCoordinates(event) {
-    let rectangle = canvas.getBoundingClientRect();
+    let rectangle = canvas[0].getBoundingClientRect();
 
     let x = event.clientX - rectangle.left;
     let y = event.clientY - rectangle.top;
@@ -105,8 +109,8 @@ function firstClick(event) {
 
     paintSquare(initialCoordinates[0], initialCoordinates[1]);
 
-    $( "canvas" ).off("click");
-    $( "canvas" ).on("click", secondClick);
+    canvas.off("click");
+    canvas.on("click", secondClick);
 }
 
 function secondClick(event) {
@@ -114,8 +118,8 @@ function secondClick(event) {
 
     drawLine();
 
-    $( "canvas" ).off("click");
-    $( "canvas" ).on("click", firstClick);
+    canvas.off("click");
+    canvas.on("click", firstClick);
 }
 
 function drawLine() {
@@ -146,26 +150,32 @@ class Circle {
     radius = 0;
 
     static showCenterMessage(){
-        document.getElementById("instructions").innerHTML = "Choose a point to define the CENTER of the circle.";
+        instructions.html("Choose a point to define the CENTER of the circle.");
+        instructions.css("visibility", "visible");
     }
 
     static centerEvent(event){
-        document.getElementById("instructions").innerHTML = "Choose another point to define the RADIUS of the circle.";
-        var circle_center = getCoordinates(event);
+        instructions.html("Choose another point to define the RADIUS of the circle.");
+        instructions.css("visibility", "visible");
+
+        const circle_center = getCoordinates(event);
         Circle.center = circle_center;
         paintSquare(circle_center[0], circle_center[1]);
-        $( "canvas" ).off("click");
-        $( "canvas" ).on("click", Circle.radiusEvent);
+
+        canvas.off("click");
+        canvas.on("click", Circle.radiusEvent);
     }
 
     static radiusEvent(event){
         Circle.showCenterMessage();
-        var border = getCoordinates(event);
-        var x_dist = Math.pow(Circle.center[0] - border[0], 2);
-        var y_dist = Math.pow(Circle.center[1] - border[1], 2);
-        Circle.radius = parseInt(Math.sqrt(x_dist + y_dist));
-        $( "canvas" ).off("click");
-        $( "canvas" ).on("click", Circle.centerEvent);
+        const border = getCoordinates(event);
+        const x_dist = Math.pow(Circle.center[0] - border[0], 2);
+        const y_dist = Math.pow(Circle.center[1] - border[1], 2);
+        Circle.radius = parseInt(Math.sqrt(x_dist + y_dist).toString());
+
+        canvas.off("click");
+        canvas.on("click", Circle.centerEvent);
+
         Circle.draw();
     }
 
@@ -181,9 +191,9 @@ class Circle {
     }
 
     static draw(){
-        var x = Circle.radius;
-        var y = 0;
-        var error = 1-x;
+        let x = Circle.radius;
+        let y = 0;
+        let error = 1 - x;
         while (x >= y){
             Circle.drawEight(x, y);
             y++;
@@ -201,8 +211,9 @@ class Circle {
 
     static initializeCircle() {
         Circle.showCenterMessage();
-        $( "canvas" ).off("click");
-        $( "canvas" ).on("click", Circle.centerEvent);
+
+        canvas.off("click");
+        canvas.on("click", Circle.centerEvent);
     }  
 }
 
@@ -215,34 +226,40 @@ class Curve {
     static points_to_draw = [];
 
     static resetInstructions(event){
-        document.getElementById("instructions").innerHTML = "Choose INITIAL point of the curve.";
+        instructions.html("Choose INITIAL point of the curve.");
+        instructions.css("visibility", "visible");
 
     }
 
     static controlPointsEvent(event){
-        var point = getCoordinates(event);
+        const point = getCoordinates(event);
         paintSquare(point[0], point[1]);
         Curve.control_points.push(point);
     }
 
     static initialPointEvent(event){
-        document.getElementById("instructions").innerHTML = "Choose FINAL point of the curve.";
-        var point = getCoordinates(event);
+        instructions.html("Choose FINAL point of the curve.");
+        instructions.css("visibility", "visible");
+
+        const point = getCoordinates(event);
         paintSquare(point[0], point[1]);
         Curve.initial_point = point;
         Curve.control_points.push(point);
         Curve.points_to_draw.push(point);
-        $( "canvas" ).off("click");
-        $( "canvas" ).on("click", Curve.finalPointEvent);
+        canvas.off("click");
+        canvas.on("click", Curve.finalPointEvent);
     }
 
     static finalPointEvent(event){
-        document.getElementById("instructions").innerHTML = "Click on CONTROL points. Press ENTER to draw the curve.";
-        var point = getCoordinates(event);
+        instructions.html("Click on CONTROL points. Press ENTER to draw the curve.");
+        instructions.css("visibility", "visible");
+
+        const point = getCoordinates(event);
         paintSquare(point[0], point[1]);
         Curve.final_point = point;
-        $( "canvas" ).off("click");
-        $( "canvas" ).on("click", Curve.controlPointsEvent);
+        Curve.final_point = point;
+        canvas.off("click");
+        canvas.on("click", Curve.controlPointsEvent);
         $(document).on("keypress", Curve.enterKeyEvent);
 
     }
@@ -254,9 +271,9 @@ class Curve {
     }
     
     static enterKeyEvent(event){
-        $( "canvas" ).off("click");
+        canvas..off("click");
         Curve.control_points.push(Curve.final_point);
-        if (event.which == 13){
+        if (event.which === 13){
             Curve.draw();
         }
         Curve.initialize();
@@ -277,7 +294,7 @@ class Curve {
     }
 
     static draw(){
-        var num_points = Curve.points_to_draw.length;
+        const num_points = Curve.points_to_draw.length;
         initialCoordinates = Curve.initial_point;
         var t;
         for (var i = 1; i <= Curve.num_lines; i++){
@@ -300,30 +317,29 @@ class Curve {
         finalCoordinates = [];
 
         Curve.resetInstructions();
-        $( "canvas" ).off("click");
-        $( "canvas" ).on("click", Curve.initialPointEvent);
+        canvas.off("click");
+        canvas.on("click", Curve.initialPointEvent);
     }  
 }
 
 class MultiLine {
-    static points = new Array();
+    static points = [];
 
     static pointsEvent(event){
-        var point = getCoordinates(event);
+        const point = getCoordinates(event);
         paintSquare(point[0], point[1]);
         MultiLine.points.push(point);
     }
 
     static enterKeyEvent(event){
-        if (event.which == 13){
+        if (event.which === 13){
             MultiLine.draw();
         }
     }
 
     static draw(){
-        var num_points = MultiLine.points.length;
-        console.log(num_points);
-        for (var i = 0; i < num_points - 1; i++){
+        const num_points = MultiLine.points.length;
+        for (let i = 0; i < num_points - 1; i++){
             initialCoordinates = MultiLine.points[i];
             finalCoordinates = MultiLine.points[i+1];
             drawLine();
@@ -333,14 +349,18 @@ class MultiLine {
     }
 
     static initialize() {
+        instructions.html("Choose at least 2 points, press ENTER to draw lines.");
+        instructions.css("visibility", "visible");
+
         MultiLine.points = [];
-        document.getElementById("instructions").innerHTML = "Choose at least 2 points, press ENTER to draw lines.";
-        $( "canvas" ).off("click");
-        $( "canvas" ).on("click", MultiLine.pointsEvent);
+
+        canvas.off("click");
+        canvas.on("click", MultiLine.pointsEvent);
+
         $(document).on("keypress", MultiLine.enterKeyEvent);
     }  
 }
 
-$( document ).on("DOMContentLoaded", initializeCanvas);
-$( document ).on("DOMContentLoaded", initializeButtons);
-$( window ).on("resize", initializeCanvas);
+$(document).on("DOMContentLoaded", initializeCanvas);
+$(document).on("DOMContentLoaded", initializeButtons);
+$(window).on("resize", initializeCanvas);
