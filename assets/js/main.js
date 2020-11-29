@@ -235,19 +235,29 @@ class Curve {
         canvas.off("click");
         canvas.on("click", Curve.finalPointEvent);
     }
-
+    
     static finalPointEvent(event){
-        instructions.html("Click on CONTROL points. Press ENTER to draw the curve.");
+        instructions.html("Pres a number key (1-9) with the number of lines to draw the curve.");
         instructions.css("visibility", "visible");
-
         const point = getCoordinates(event);
         paintSquare(point[0], point[1]);
         Curve.final_point = point;
         Curve.final_point = point;
         canvas.off("click");
+        $(document).on("keypress", Curve.numLinesEvent);
+    }
+
+    static numLinesEvent(event){
+        $(document).off("keypress");
+        instructions.html("Click on CONTROL points. Press ENTER to draw the curve.");
+        instructions.css("visibility", "visible");
+        canvas.off("click");
+        if (event.which >= 49 && event.which <= 57){
+            Curve.num_lines = event.which - 48;
+        }
+        canvas.off("click");
         canvas.on("click", Curve.controlPointsEvent);
         $(document).on("keypress", Curve.enterKeyEvent);
-
     }
 
     static controlPointsEvent(event){
@@ -262,9 +272,9 @@ class Curve {
         if (event.which === 13){
             Curve.draw();
         }
-        canvas.off("click");
+        canvas.off("click")
+        $(document).off("keypress");
         Curve.initialize();
-        //canvas.off("click");
     }
 
     static belzierPoint(t){
