@@ -1,36 +1,21 @@
-let [canvas, instructions] = [$("#canvas"), $("#instructions")];
-let initialCoordinates, finalCoordinates, pixelSize;
+import * as constants from "./cg/constants.js";
+import * as tools from "./cg/tools.js"; tools.extendMath();
 
-const blue_color = "#0099cc"
-const dpi     = window.devicePixelRatio;
+let [canvas, instructions] = [$("#canvas"), $("#instructions")];
+let initialCoordinates, finalCoordinates;
+
 const context = canvas[0].getContext("2d");
 
 context.translate(0.5, 0.5);
 
-function resetInstructions(){
-    instructions.html("Choose an option.");
-    instructions.css("visibility", "hidden");
-}
-
-
-class AdditionalMath {
-    static vectorAddition(firstVector, secondVector) {
-        return firstVector.map((x, i) => x + secondVector[i])
-    }
-
-    static scalarMultiplication(vector, scalar) {
-        return vector.map(x => x * scalar);
-    }
-}
-
 function initializeCanvas() {
     // resetInstructions();
     
-    if (typeof pixelSize === 'undefined') {
-        pixelSize = 20;
+    if (typeof constants.PIXEL_SIZE === 'undefined') {
+        constants.PIXEL_SIZE = 20;
     }
 
-    drawPixelGrid(pixelSize);
+    drawPixelGrid(constants.PIXEL_SIZE);
 }
 
 function initializeButtons() {
@@ -49,8 +34,8 @@ function activateBresenham() {
 }
 
 function drawPixelGrid(pixelSize) {
-    let height = canvas[0].offsetHeight * dpi;
-    let width  = canvas[0].offsetWidth * dpi;
+    let height = canvas[0].offsetHeight * constants.DPI;
+    let width  = canvas[0].offsetWidth * constants.DPI;
 
 
     canvas[0].setAttribute('height', height.toString());
@@ -73,35 +58,17 @@ function drawPixelGrid(pixelSize) {
     context.stroke();
 }
 
-function getCoordinates(event) {
-    let rectangle = canvas[0].getBoundingClientRect();
-
-    let x = event.clientX - rectangle.left;
-    let y = event.clientY - rectangle.top;
-
-
-    return [Math.floor(x / pixelSize), Math.floor(y / pixelSize)];
-}
-
-function paintSquare(x, y, color="#ff0000") {
-    x *= pixelSize;
-    y *= pixelSize;
-
-    context.fillStyle=color;
-    context.fillRect(x, y, pixelSize, pixelSize);
-}
-
 function firstClick(event) {
-    initialCoordinates = getCoordinates(event);
+    initialCoordinates = tools.getCoordinates(event);
 
-    paintSquare(initialCoordinates[0], initialCoordinates[1]);
+    tools.paintSquare(initialCoordinates, initialCoordinates);
 
     canvas.off("click");
     canvas.on("click", secondClick);
 }
 
 function secondClick(event) {
-    finalCoordinates = getCoordinates(event);
+    finalCoordinates = tools.getCoordinates(event);
 
     drawLine();
 
@@ -127,7 +94,7 @@ function drawLine() {
         if (twoTimesError > -deltaY) { error -= deltaY; x0 += signalX; }
         if (twoTimesError <  deltaX) { error += deltaX; y0 += signalY; }
 
-        paintSquare(x0, y0);
+        tools.paintSquare([x0, y0]);
     }
 }
 
@@ -136,26 +103,26 @@ class Circle {
     center = [0, 0];
     radius = 0;
 
-    static showCenterMessage(){
+    static showCenterMessage() {
         instructions.html("Choose a point to define the CENTER of the circle.");
         instructions.css("visibility", "visible");
     }
 
-    static centerEvent(event){
+    static centerEvent(event) {
         instructions.html("Choose another point to define the RADIUS of the circle.");
         instructions.css("visibility", "visible");
 
-        const circle_center = getCoordinates(event);
+        const circle_center = tools.getCoordinates(event);
         Circle.center = circle_center;
-        paintSquare(circle_center[0], circle_center[1], blue_color);
+        tools.paintSquare(circle_center, constants.BLUE);
 
         canvas.off("click");
         canvas.on("click", Circle.radiusEvent);
     }
 
-    static radiusEvent(event){
+    static radiusEvent(event) {
         Circle.showCenterMessage();
-        const border = getCoordinates(event);
+        const border = tools.getCoordinates(event);
         const x_dist = Math.pow(Circle.center[0] - border[0], 2);
         const y_dist = Math.pow(Circle.center[1] - border[1], 2);
         Circle.radius = parseInt(Math.sqrt(x_dist + y_dist).toString());
@@ -166,15 +133,15 @@ class Circle {
         Circle.draw();
     }
 
-    static drawEight(x, y){
-        paintSquare(x + Circle.center[0], y + Circle.center[1]);
-        paintSquare(y + Circle.center[0], x + Circle.center[1]);
-        paintSquare(y + Circle.center[0], -x + Circle.center[1]);
-        paintSquare(x + Circle.center[0], -y + Circle.center[1]);
-        paintSquare(-x + Circle.center[0], -y + Circle.center[1]);
-        paintSquare(-y + Circle.center[0], -x + Circle.center[1]);
-        paintSquare(-y + Circle.center[0], x + Circle.center[1]);
-        paintSquare(-x + Circle.center[0], y + Circle.center[1]);
+    static drawEight(x, y) {
+        tools.paintSquare([x + Circle.center[0], y + Circle.center[1]]);
+        tools.paintSquare([y + Circle.center[0], x + Circle.center[1]]);
+        tools.paintSquare([y + Circle.center[0], -x + Circle.center[1]]);
+        tools.paintSquare([x + Circle.center[0], -y + Circle.center[1]]);
+        tools.paintSquare([-x + Circle.center[0], -y + Circle.center[1]]);
+        tools.paintSquare([-y + Circle.center[0], -x + Circle.center[1]]);
+        tools.paintSquare([-y + Circle.center[0], x + Circle.center[1]]);
+        tools.paintSquare([-x + Circle.center[0], y + Circle.center[1]]);
     }
 
     static draw(){
@@ -212,14 +179,14 @@ class Curve {
     static final_point = [0, 0];
     static points_to_draw = [];
 
-    static resetInstructions(event){
+    static resetInstructions(){
         instructions.html("Choose INITIAL point of the curve.");
         instructions.css("visibility", "visible");
     }
 
     static controlPointsEvent(event){
-        const point = getCoordinates(event);
-        paintSquare(point[0], point[1]);
+        const point = tools.getCoordinates(event);
+        tools.paintSquare(point);
         Curve.control_points.push(point);
     }
 
@@ -227,8 +194,8 @@ class Curve {
         instructions.html("Choose FINAL point of the curve.");
         instructions.css("visibility", "visible");
 
-        const point = getCoordinates(event);
-        paintSquare(point[0], point[1]);
+        const point = tools.getCoordinates(event);
+        tools.paintSquare(point);
         Curve.initial_point = point;
         Curve.control_points.push(point);
         Curve.points_to_draw.push(point);
@@ -239,8 +206,8 @@ class Curve {
     static finalPointEvent(event){
         instructions.html("Pres a number key (1-9) with the number of lines to draw the curve.");
         instructions.css("visibility", "visible");
-        const point = getCoordinates(event);
-        paintSquare(point[0], point[1]);
+        const point = tools.getCoordinates(event);
+        tools.paintSquare(point);
         Curve.final_point = point;
         Curve.final_point = point;
         canvas.off("click");
@@ -261,8 +228,8 @@ class Curve {
     }
 
     static controlPointsEvent(event){
-        var point = getCoordinates(event);
-        paintSquare(point[0], point[1], blue_color);
+        const point = tools.getCoordinates(event);
+        tools.paintSquare(point, constants.BLUE);
         Curve.control_points.push(point);
     }
     
@@ -283,10 +250,10 @@ class Curve {
 
         for (let r = 1; r <= degree; r++){
             for (let i = 0; i <= degree - r; i++){
-                const firstMultiplication = AdditionalMath.scalarMultiplication(points[i], (1.0 - t));
-                const secondMultiplication = AdditionalMath.scalarMultiplication(points[i + 1], t);
+                const firstMultiplication = Math.scalarMultiplication(points[i], (1.0 - t));
+                const secondMultiplication = Math.scalarMultiplication(points[i + 1], t);
 
-                points[i] = AdditionalMath.vectorAddition(firstMultiplication, secondMultiplication);
+                points[i] = Math.vectorAddition(firstMultiplication, secondMultiplication);
             }
         }
         return points[0];
@@ -297,7 +264,7 @@ class Curve {
         let t;
         for (let i = 1; i <= Curve.num_lines; i++){
             t = (1.0 / Curve.num_lines) * i;
-            var final_point = Curve.belzierPoint(t);
+            const final_point = Curve.belzierPoint(t);
             // burro, tem que mudar
             finalCoordinates = [parseInt(final_point[0]), 
                                 parseInt(final_point[1])]
@@ -324,8 +291,8 @@ class MultiLine {
     static points = [];
 
     static pointsEvent(event){
-        const point = getCoordinates(event);
-        paintSquare(point[0], point[1]);
+        const point = tools.getCoordinates(event);
+        tools.paintSquare(point);
         MultiLine.points.push(point);
     }
 
