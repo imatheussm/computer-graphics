@@ -13,28 +13,14 @@ function resetInstructions(){
 }
 
 
-function arrayAddition(array1, array2){
-    var result = [];
-    if (array1.length != array2.length){
-        return 0;
+class AdditionalMath {
+    static vectorAddition(firstVector, secondVector) {
+        return firstVector.map((x, i) => x + secondVector[i])
     }
 
-    for (var i=0; i<array1.length; i++){
-        result.push(array1[i] + array2[i]);
+    static scalarMultiplication(vector, scalar) {
+        return vector.map(x => x * scalar);
     }
-
-    return result;
-}
-
-function scalarMult(array, scalar){
-    var result = [];
-    
-    for (var i=0; i<array.length; i++){
-        result.push(array[i] * scalar);
-    }
-
-    return result;
-
 }
 
 function initializeCanvas() {
@@ -282,24 +268,25 @@ class Curve {
     }
 
     static belzierPoint(t){
-        var degree = Curve.control_points.length - 1;
-        var points = Curve.control_points.slice();
-        for (var r = 1; r <= degree; r++){
-            for (var i = 0; i <= degree - r; i++){
-                var first_mult = scalarMult(points[i], (1.0-t)); 
-                var second_mult = scalarMult(points[i+1], t); 
-                points[i] = arrayAddition(first_mult, second_mult);
+        const degree = Curve.control_points.length - 1;
+        const points = Curve.control_points.slice();
+
+        for (let r = 1; r <= degree; r++){
+            for (let i = 0; i <= degree - r; i++){
+                const firstMultiplication = AdditionalMath.scalarMultiplication(points[i], (1.0 - t));
+                const secondMultiplication = AdditionalMath.scalarMultiplication(points[i + 1], t);
+
+                points[i] = AdditionalMath.vectorAddition(firstMultiplication, secondMultiplication);
             }
         }
         return points[0];
     }
 
     static draw(){
-        const num_points = Curve.points_to_draw.length;
         initialCoordinates = Curve.initial_point;
-        var t;
-        for (var i = 1; i <= Curve.num_lines; i++){
-            t = (1.0/Curve.num_lines)*i;
+        let t;
+        for (let i = 1; i <= Curve.num_lines; i++){
+            t = (1.0 / Curve.num_lines) * i;
             var final_point = Curve.belzierPoint(t);
             // burro, tem que mudar
             finalCoordinates = [parseInt(final_point[0]), 
