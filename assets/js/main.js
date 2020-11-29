@@ -11,6 +11,30 @@ function resetInstructions(){
 }
 
 
+function arrayAddition(array1, array2){
+    var result = [];
+    if (array1.length != array2.length){
+        return 0;
+    }
+
+    for (var i=0; i<array1.length; i++){
+        result.push(array1[i] + array2[i]);
+    }
+
+    return result;
+}
+
+function scalarMult(array, scalar){
+    var result = [];
+    
+    for (var i=0; i<array.length; i++){
+        result.push(array[i] * scalar);
+    }
+
+    return result;
+
+}
+
 function initializeCanvas() {
     resetInstructions();
     if (typeof pixelSize === 'undefined') {
@@ -198,7 +222,7 @@ class Curve {
     static controlPointsEvent(event){
         var point = getCoordinates(event);
         paintSquare(point[0], point[1]);
-        MultiLine.points.push(point);
+        Curve.control_points.push(point);
     }
 
     static initialPointEvent(event){
@@ -213,40 +237,68 @@ class Curve {
     }
 
     static finalPointEvent(event){
-        document.getElementById("instructions").innerHTML = "Press ENTER to draw the curve.";
+        document.getElementById("instructions").innerHTML = "Click on CONTROL points. Press ENTER to draw the curve.";
         var point = getCoordinates(event);
         paintSquare(point[0], point[1]);
         Curve.final_point = point;
-        Curve.control_points.push(point);
-        Curve.points_to_draw.push(point);
         $( "canvas" ).off("click");
+        $( "canvas" ).on("click", Curve.controlPointsEvent);
         $(document).on("keypress", Curve.enterKeyEvent);
 
     }
+
+    static controlPointsEvent(event){
+        var point = getCoordinates(event);
+        paintSquare(point[0], point[1], "#0099cc");
+        Curve.control_points.push(point);
+    }
     
     static enterKeyEvent(event){
+        $( "canvas" ).off("click");
+        Curve.control_points.push(Curve.final_point);
         if (event.which == 13){
             Curve.draw();
         }
         Curve.initialize();
+        $( "canvas" ).off("click");
     }
 
-    static belzierPoint(){
-
+    static belzierPoint(t){
+        var degree = Curve.control_points.length - 1;
+        var points = Curve.control_points.slice();
+        for (var r = 1; r <= degree; r++){
+            for (var i = 0; i <= degree - r; i++){
+                var first_mult = scalarMult(points[i], (1.0-t)); 
+                var second_mult = scalarMult(points[i+1], t); 
+                points[i] = arrayAddition(first_mult, second_mult);
+            }
+        }
+        return points[0];
     }
 
     static draw(){
         var num_points = Curve.points_to_draw.length;
-        for (var i = 0; i < num_points - 1; i++){
-            initialCoordinates = Curve.points_to_draw[i];
-            finalCoordinates = Curve.points_to_draw[i+1];
+        initialCoordinates = Curve.initial_point;
+        var t;
+        for (var i = 1; i <= Curve.num_lines; i++){
+            t = (1.0/Curve.num_lines)*i;
+            var final_point = Curve.belzierPoint(t);
+            // burro, tem que mudar
+            finalCoordinates = [parseInt(final_point[0]), 
+                                parseInt(final_point[1])]
             drawLine();
+            initialCoordinates = finalCoordinates;
         }
-        Curve.points_to_draw = [];
-
     }
 
     static initialize() {
+        Curve.points_to_draw = [];
+        Curve.control_points = [];
+        Curve.initial_point = [0,0];
+        Curve.final_point = [0,0];
+        initialCoordinates = [];
+        finalCoordinates = [];
+
         Curve.resetInstructions();
         $( "canvas" ).off("click");
         $( "canvas" ).on("click", Curve.initialPointEvent);
@@ -270,6 +322,7 @@ class MultiLine {
 
     static draw(){
         var num_points = MultiLine.points.length;
+        console.log(num_points);
         for (var i = 0; i < num_points - 1; i++){
             initialCoordinates = MultiLine.points[i];
             finalCoordinates = MultiLine.points[i+1];
