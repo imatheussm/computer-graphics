@@ -68,11 +68,11 @@ function getCoordinates(event) {
     return [Math.floor(x / pixelSize), Math.floor(y / pixelSize)];
 }
 
-function paintSquare(x, y) {
+function paintSquare(x, y, color="#ff0000") {
     x *= pixelSize;
     y *= pixelSize;
 
-    context.fillStyle="#ff0000";
+    context.fillStyle=color;
     context.fillRect(x, y, pixelSize, pixelSize);
 }
 
@@ -229,6 +229,9 @@ class Curve {
             Curve.draw();
         }
         Curve.initialize();
+    }
+
+    static belzierPoint(){
 
     }
 
