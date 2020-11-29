@@ -1,10 +1,11 @@
 import * as constants from "./constants.js";
 
-export function resetInstructions() {
-    let instructions = $("#instructions");
-
-    // instructions.html("Choose an option.");
-    instructions.css("visibility", "hidden");
+export function showMessage(message = "") {
+    if(message === "") {
+        constants.INSTRUCTIONS.css("visibility", "hidden");
+    } else {
+        constants.INSTRUCTIONS.css("visibility", "visible").html(message);
+    }
 }
 
 export function extendMath() {
