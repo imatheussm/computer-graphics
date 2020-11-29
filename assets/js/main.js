@@ -22,10 +22,11 @@ function initializeCanvas() {
 }
 
 function initializeButtons() {
-    $("#bresenham-button").on("click", activateBresenham);
-    $("#circle-button").on("click", Circle.initializeCircle);
-    $("#multi-line-button").on("click", MultiLine.initialize);
-    $("#clear-button").on("click", initializeCanvas);
+    $( "#bresenham-button" ).on("click", activateBresenham);
+    $( "#circle-button" ).on("click", Circle.initializeCircle);
+    $( "#curve-button" ).on("click", Curve.initialize);
+    $( "#multi-line-button" ).on("click", MultiLine.initialize);
+    $( "#clear-button" ).on("click", initializeCanvas);
 }
 
 function activateBresenham() {
@@ -70,11 +71,11 @@ function getCoordinates(event) {
     return [Math.floor(x / pixelSize), Math.floor(y / pixelSize)];
 }
 
-function paintSquare(x, y) {
+function paintSquare(x, y, color="#ff0000") {
     x *= pixelSize;
     y *= pixelSize;
 
-    context.fillStyle="#ff0000";
+    context.fillStyle=color;
     context.fillRect(x, y, pixelSize, pixelSize);
 }
 
@@ -188,6 +189,77 @@ class Circle {
 
         canvas.off("click");
         canvas.on("click", Circle.centerEvent);
+    }  
+}
+
+class Curve {
+
+    static num_lines = 3;
+    static control_points = [];
+    static initial_point = [0, 0];
+    static final_point = [0, 0];
+    static points_to_draw = [];
+
+    static resetInstructions(event){
+        document.getElementById("instructions").innerHTML = "Choose INITIAL point of the curve.";
+
+    }
+
+    static controlPointsEvent(event){
+        var point = getCoordinates(event);
+        paintSquare(point[0], point[1]);
+        MultiLine.points.push(point);
+    }
+
+    static initialPointEvent(event){
+        document.getElementById("instructions").innerHTML = "Choose FINAL point of the curve.";
+        var point = getCoordinates(event);
+        paintSquare(point[0], point[1]);
+        Curve.initial_point = point;
+        Curve.control_points.push(point);
+        Curve.points_to_draw.push(point);
+        $( "canvas" ).off("click");
+        $( "canvas" ).on("click", Curve.finalPointEvent);
+    }
+
+    static finalPointEvent(event){
+        document.getElementById("instructions").innerHTML = "Press ENTER to draw the curve.";
+        var point = getCoordinates(event);
+        paintSquare(point[0], point[1]);
+        Curve.final_point = point;
+        Curve.control_points.push(point);
+        Curve.points_to_draw.push(point);
+        $( "canvas" ).off("click");
+        $(document).on("keypress", Curve.enterKeyEvent);
+
+    }
+    
+    static enterKeyEvent(event){
+        if (event.which == 13){
+            Curve.draw();
+        }
+        Curve.initialize();
+    }
+
+    static belzierPoint(){
+
+    }
+
+    static draw(){
+        var num_points = Curve.points_to_draw.length;
+        for (var i = 0; i < num_points - 1; i++){
+            initialCoordinates = Curve.points_to_draw[i];
+            finalCoordinates = Curve.points_to_draw[i+1];
+            drawLine();
+        }
+        Curve.points_to_draw = [];
+
+    }
+
+    static initialize() {
+        Curve.resetInstructions();
+        $( "canvas" ).off("click");
+        $( "canvas" ).on("click", Curve.initialPointEvent);
     }  
 }
 
