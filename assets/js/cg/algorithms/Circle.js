@@ -1,8 +1,7 @@
 import * as tools from "../tools.js";
 import * as constants from "../constants.js";
 
-let center = [0, 0];
-let radius = 0;
+let center, radius;
 
 export function initializer() {
     tools.showMessage("Choose a point to define the CENTER of the circle.");
@@ -14,7 +13,7 @@ function centerEvent(event) {
     constants.INSTRUCTIONS.html("Choose another point to define the RADIUS of the circle.");
     constants.INSTRUCTIONS.css("visibility", "visible");
 
-    center = tools.getCoordinates(event);;
+    center = tools.getCoordinates(event);
     tools.paintSquare(center, constants.BLUE);
 
     constants.CANVAS.off("click").on("click", radiusEvent);

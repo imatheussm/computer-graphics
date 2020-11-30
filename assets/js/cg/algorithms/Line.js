@@ -2,6 +2,12 @@ import * as tools from "../tools.js";
 
 
 export function draw(initialCoordinates, finalCoordinates) {
+    // let [x0, y0] = initialCoordinates.map(c => Math.round(c));
+    // let [x1, y1] = finalCoordinates.map(c => Math.round(c));
+
+    // let [x0, y0] = initialCoordinates.map(c => parseInt(c));
+    // let [x1, y1] = finalCoordinates.map(c => parseInt(c));
+
     let [x0, y0] = initialCoordinates;
     let [x1, y1] = finalCoordinates;
 
