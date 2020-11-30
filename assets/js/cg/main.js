@@ -8,7 +8,5 @@ $(document).ready(function() {
 });
 
 $(window).on("resize", function() {
-    Canvas.updateCanvasDimensions();
-    Canvas.drawPixelGrid();
-    Canvas.paintPixelGrid();
+    Canvas.refresh();
 });

@@ -14,8 +14,6 @@ export function initialize() {
 
     initializePixelMatrix();
 
-    console.log(PIXEL_MATRIX);
-
     updateCanvasDimensions();
     drawPixelGrid();
 
@@ -23,11 +21,17 @@ export function initialize() {
     Instructions.showMessage("Select an algorithm to continue.");
 }
 
+export function refresh() {
+    updateCanvasDimensions();
+    drawPixelGrid();
+    paintPixelGrid();
+}
+
 function initializePixelMatrix() {
     PIXEL_MATRIX = Array(CANVAS_VIRTUAL_HEIGHT).fill(null).map(() => Array(CANVAS_VIRTUAL_WIDTH).fill(null));
 }
 
-export function updateCanvasDimensions() {
+function updateCanvasDimensions() {
     CANVAS_REAL_HEIGHT = CANVAS[0].offsetHeight * DPI;
     CANVAS_REAL_WIDTH  = CANVAS[0].offsetWidth  * DPI;
 
@@ -65,7 +69,7 @@ function updatePixelMatrix() {
     }
 }
 
-export function drawPixelGrid() {
+function drawPixelGrid() {
     CANVAS[0].setAttribute('height', CANVAS_REAL_HEIGHT.toString());
     CANVAS[0].setAttribute('width', CANVAS_REAL_WIDTH.toString());
 
@@ -84,7 +88,7 @@ export function drawPixelGrid() {
     CONTEXT.stroke();
 }
 
-export function paintPixelGrid() {
+function paintPixelGrid() {
     for (let line = 0; line < PIXEL_MATRIX.length; line++) {
         for (let column = 0; column < PIXEL_MATRIX[0].length; column++) {
             if (PIXEL_MATRIX[line][column] != null) {

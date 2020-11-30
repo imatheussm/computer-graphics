@@ -62,6 +62,7 @@ function controlPointsEvent(event) {
         Canvas.CANVAS.off("click");
         controlPoints.push(finalCoordinates);
         draw();
+        Canvas.refresh();
         initialize();
     }
 }

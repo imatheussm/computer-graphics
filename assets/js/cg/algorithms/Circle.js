@@ -26,6 +26,8 @@ function radiusEvent(event) {
 
     draw();
 
+    Canvas.refresh();
+
     Canvas.CANVAS.off("click").on("click", centerEvent);
     Instructions.showMessage("Choose a point to define the CENTER of the circle.");
 }
