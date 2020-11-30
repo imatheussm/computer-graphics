@@ -1,10 +1,10 @@
-import * as constants from "./constants.js";
+import * as globals from "./globals.js";
 
 export function showMessage(message = "") {
     if(message === "") {
-        constants.INSTRUCTIONS.css("visibility", "hidden");
+        globals.INSTRUCTIONS.css("visibility", "hidden");
     } else {
-        constants.INSTRUCTIONS.css("visibility", "visible").html(message);
+        globals.INSTRUCTIONS.css("visibility", "visible").html(message);
     }
 }
 
@@ -18,15 +18,6 @@ export function extendMath() {
     }
 }
 
-export function paintSquare(coordinates, color="#ff0000") {
-    let context = $("#canvas")[0].getContext("2d");
-
-    coordinates = coordinates.map(x => x * constants.PIXEL_SIZE)
-
-    context.fillStyle = color;
-    context.fillRect(coordinates[0], coordinates[1], constants.PIXEL_SIZE, constants.PIXEL_SIZE);
-}
-
 export function getCoordinates(event) {
     let rectangle = $("#canvas")[0].getBoundingClientRect();
 
@@ -34,5 +25,5 @@ export function getCoordinates(event) {
     let y = event.clientY - rectangle.top;
 
 
-    return [Math.floor(x / constants.PIXEL_SIZE), Math.floor(y / constants.PIXEL_SIZE)];
+    return [Math.floor(x / globals.PIXEL_SIZE), Math.floor(y / globals.PIXEL_SIZE)];
 }

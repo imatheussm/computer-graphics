@@ -1,5 +1,7 @@
 import * as tools from "../tools.js"; tools.extendMath();
-import * as constants from "../constants.js";
+import * as globals from "../globals.js";
+
+import * as Canvas from "../Canvas.js";
 import * as Line from "./Line.js";
 
 let initialCoordinates, finalCoordinates;
@@ -9,25 +11,25 @@ let controlPoints, num_lines;
 export function initializer() {
     controlPoints = [];
 
-    constants.CANVAS.off("click").on("click", initialPointEvent);
+    globals.CANVAS.off("click").on("click", initialPointEvent);
     tools.showMessage("Choose the INITIAL point of the curve.");
 }
 
 function initialPointEvent(event) {
     initialCoordinates = tools.getCoordinates(event);
-    tools.paintSquare(initialCoordinates);
+    Canvas.paintPixel(initialCoordinates);
     controlPoints.push(initialCoordinates);
 
-    constants.CANVAS.off("click").on("click", finalPointEvent);
+    globals.CANVAS.off("click").on("click", finalPointEvent);
     tools.showMessage("Choose the FINAL point of the curve.");
 }
 
 function finalPointEvent(event) {
     finalCoordinates = tools.getCoordinates(event);
 
-    tools.paintSquare(finalCoordinates);
+    Canvas.paintPixel(finalCoordinates);
 
-    constants.CANVAS.off("click");
+    globals.CANVAS.off("click");
     $(document).on("keypress", numLinesEvent);
     tools.showMessage("Press a number key (1-9) with the number of lines to draw the curve.");
 }
@@ -38,17 +40,17 @@ function numLinesEvent(event) {
     }
 
     $(document).off("keypress");
-    constants.CANVAS.on("click", controlPointsEvent);
+    globals.CANVAS.on("click", controlPointsEvent);
     tools.showMessage("Click on CONTROL points.");
 }
 
 function controlPointsEvent(event) {
     const point = tools.getCoordinates(event);
-    tools.paintSquare(point);
+    Canvas.paintPixel(point);
     controlPoints.push(point);
 
     if (controlPoints.length - 1 === num_lines) {
-        constants.CANVAS.off("click");
+        globals.CANVAS.off("click");
         controlPoints.push(finalCoordinates);
         draw();
         initializer();

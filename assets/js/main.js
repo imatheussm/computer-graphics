@@ -1,14 +1,15 @@
-import * as constants from "./cg/constants.js";
+import * as globals from "./cg/globals.js";
 
 import * as Buttons from "./cg/Buttons.js";
 import * as Canvas from "./cg/Canvas.js";
 
 
 $(document).ready(function() {
-    constants.CONTEXT.translate(0.5, 0.5);
-
     Canvas.initializer();
     Buttons.initializer();
 });
 
-$(window).on("resize", Canvas.initializer);
+$(window).on("resize", function() {
+    globals.updateCanvasDimensions();
+    Canvas.paintPixelGrid();
+});

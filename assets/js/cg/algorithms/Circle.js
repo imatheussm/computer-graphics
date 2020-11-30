@@ -1,18 +1,20 @@
 import * as tools from "../tools.js";
-import * as constants from "../constants.js";
+import * as globals from "../globals.js";
+
+import * as Canvas from "../Canvas.js";
 
 let center, radius;
 
 export function initializer() {
-    constants.CANVAS.off("click").on("click", centerEvent);
+    globals.CANVAS.off("click").on("click", centerEvent);
     tools.showMessage("Choose a point to define the CENTER of the circle.");
 }
 
 function centerEvent(event) {
     center = tools.getCoordinates(event);
-    tools.paintSquare(center, constants.BLUE);
+    Canvas.paintPixel(center, globals.BLUE);
 
-    constants.CANVAS.off("click").on("click", radiusEvent);
+    globals.CANVAS.off("click").on("click", radiusEvent);
     tools.showMessage("Choose another point to define the RADIUS of the circle.");
 }
 
@@ -24,19 +26,19 @@ function radiusEvent(event) {
 
     draw();
 
-    constants.CANVAS.off("click").on("click", centerEvent);
+    globals.CANVAS.off("click").on("click", centerEvent);
     tools.showMessage("Choose a point to define the CENTER of the circle.");
 }
 
 function drawEight(x, y) {
-    tools.paintSquare([ x + center[0],  y + center[1]]);
-    tools.paintSquare([ y + center[0],  x + center[1]]);
-    tools.paintSquare([ y + center[0], -x + center[1]]);
-    tools.paintSquare([ x + center[0], -y + center[1]]);
-    tools.paintSquare([-x + center[0], -y + center[1]]);
-    tools.paintSquare([-y + center[0], -x + center[1]]);
-    tools.paintSquare([-y + center[0],  x + center[1]]);
-    tools.paintSquare([-x + center[0],  y + center[1]]);
+    Canvas.paintPixel([ x + center[0],  y + center[1]]);
+    Canvas.paintPixel([ y + center[0],  x + center[1]]);
+    Canvas.paintPixel([ y + center[0], -x + center[1]]);
+    Canvas.paintPixel([ x + center[0], -y + center[1]]);
+    Canvas.paintPixel([-x + center[0], -y + center[1]]);
+    Canvas.paintPixel([-y + center[0], -x + center[1]]);
+    Canvas.paintPixel([-y + center[0],  x + center[1]]);
+    Canvas.paintPixel([-x + center[0],  y + center[1]]);
 }
 
 function draw() {

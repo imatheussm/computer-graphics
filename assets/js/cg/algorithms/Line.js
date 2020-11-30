@@ -1,6 +1,7 @@
-import * as constants from "../constants.js";
+import * as globals from "../globals.js";
 import * as tools from "../tools.js";
 
+import * as Canvas from "../Canvas.js";
 
 let point;
 
@@ -9,14 +10,14 @@ export function initializer() {
 
     tools.showMessage("Choose at least 2 points to draw lines on the screen. Press ENTER to end a polyline.");
 
-    constants.CANVAS.off("click").on("click", handleClick);
+    globals.CANVAS.off("click").on("click", handleClick);
     $(document).off("keypress").off("keyup").on("keyup", handleKeyUp);
 }
 
 function handleClick(event) {
     if (point == null) {
         point = tools.getCoordinates(event);
-        tools.paintSquare(point);
+        Canvas.paintPixel(point);
     } else {
         const newPoint = tools.getCoordinates(event);
         draw(point, newPoint);
@@ -48,6 +49,6 @@ export function draw(initialCoordinates, finalCoordinates) {
         if (twoTimesError > -deltaY) { error -= deltaY; x0 += signalX; }
         if (twoTimesError <  deltaX) { error += deltaX; y0 += signalY; }
 
-        tools.paintSquare([x0, y0]);
+        Canvas.paintPixel([x0, y0]);
     }
 }
