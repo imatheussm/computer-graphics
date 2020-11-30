@@ -33,8 +33,8 @@ function handleKeyUp(event) {
 }
 
 export function draw(initialCoordinates, finalCoordinates) {
-    let [x0, y0] = initialCoordinates.map(c => parseInt(c));
-    let [x1, y1] = finalCoordinates.map(c => parseInt(c));
+    let [x0, y0] = initialCoordinates.map(c => Math.round(c));
+    let [x1, y1] = finalCoordinates.map(c => Math.round(c));
 
     let [deltaX, deltaY] = [Math.abs(x1 - x0), Math.abs(y1 - y0)];
     let [signalX, signalY] = [(x0 < x1 ? 1 : -1), (y0 < y1 ? 1 : -1)];
