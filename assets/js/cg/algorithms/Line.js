@@ -1,25 +1,24 @@
-import * as globals from "../globals.js";
-import * as tools from "../tools.js";
-
-import * as Canvas from "../Canvas.js";
+import * as Canvas from "../elements/Canvas.js";
+import * as Instructions from "../elements/Instructions.js";
 
 let point;
 
-export function initializer() {
+export function initialize() {
     point = null;
 
-    tools.showMessage("Choose at least 2 points to draw lines on the screen. Press ENTER to end a polyline.");
+    Instructions.showMessage("Choose at least 2 points to draw lines on the screen. Press ENTER to end a polyline.");
 
-    globals.CANVAS.off("click").on("click", handleClick);
+    Canvas.CANVAS.off("click").on("click", handleClick);
     $(document).off("keypress").off("keyup").on("keyup", handleKeyUp);
 }
 
 function handleClick(event) {
     if (point == null) {
-        point = tools.getCoordinates(event);
+        point = Canvas.getCoordinates(event);
+        console.log(`point: ${point}`);
         Canvas.paintPixel(point);
     } else {
-        const newPoint = tools.getCoordinates(event);
+        const newPoint = Canvas.getCoordinates(event);
         draw(point, newPoint);
         point = newPoint;
     }
@@ -32,6 +31,8 @@ function handleKeyUp(event) {
 }
 
 export function draw(initialCoordinates, finalCoordinates) {
+    console.log("Drawing...");
+
     let [x0, y0] = initialCoordinates.map(c => parseInt(c));
     let [x1, y1] = finalCoordinates.map(c => parseInt(c));
 
