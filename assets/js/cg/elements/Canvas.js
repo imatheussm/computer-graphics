@@ -101,7 +101,8 @@ export function paintPixel(coordinates, color, isPermanent) {
     CONTEXT.fillStyle = color;
     CONTEXT.fillRect(realX, realY, PIXEL_SIZE, PIXEL_SIZE);
 
-    if (isPermanent === true) {
+    if (isPermanent === true && virtualX >= 0 && virtualY >= 0 &&
+        virtualX < PIXEL_MATRIX[0].length && virtualY < PIXEL_MATRIX.length) {
         PIXEL_MATRIX[virtualY][virtualX] = color;
     }
 }
