@@ -4,8 +4,8 @@ export const CANVAS  = $("#canvas");
 export const CONTEXT = CANVAS[0].getContext("2d");
 export const DPI     = window.devicePixelRatio;
 
-export var CANVAS_REAL_HEIGHT, CANVAS_REAL_WIDTH, CANVAS_VIRTUAL_HEIGHT, CANVAS_VIRTUAL_WIDTH;
-export var PIXEL_SIZE, PIXEL_MATRIX;
+let CANVAS_REAL_HEIGHT, CANVAS_REAL_WIDTH, CANVAS_VIRTUAL_HEIGHT, CANVAS_VIRTUAL_WIDTH;
+let PIXEL_SIZE, PIXEL_MATRIX;
 
 CONTEXT.translate(0.5, 0.5);
 
@@ -13,6 +13,9 @@ export function initialize() {
     PIXEL_SIZE = PIXEL_SIZE || 20;
 
     initializePixelMatrix();
+
+    console.log(PIXEL_MATRIX);
+
     updateCanvasDimensions();
     drawPixelGrid();
 
@@ -25,21 +28,11 @@ function initializePixelMatrix() {
 }
 
 export function updateCanvasDimensions() {
-    console.log(`DPI: ${DPI}`);
-
-    CANVAS_REAL_HEIGHT    = CANVAS[0].offsetHeight * DPI;
-    CANVAS_REAL_WIDTH     = CANVAS[0].offsetWidth  * DPI;
-
-    console.log(`CANVAS_REAL_HEIGHT: ${CANVAS_REAL_HEIGHT}`);
-    console.log(`CANVAS_REAL_WIDTH: ${CANVAS_REAL_WIDTH}`);
-
-    console.log(`PIXEL_SIZE: ${PIXEL_SIZE}`);
+    CANVAS_REAL_HEIGHT = CANVAS[0].offsetHeight * DPI;
+    CANVAS_REAL_WIDTH  = CANVAS[0].offsetWidth  * DPI;
 
     CANVAS_VIRTUAL_HEIGHT = Math.ceil(CANVAS_REAL_HEIGHT / PIXEL_SIZE);
     CANVAS_VIRTUAL_WIDTH  = Math.ceil(CANVAS_REAL_WIDTH  / PIXEL_SIZE);
-
-    console.log(`CANVAS_VIRTUAL_HEIGHT: ${CANVAS_VIRTUAL_HEIGHT}`);
-    console.log(`CANVAS_VIRTUAL_WIDTH: ${CANVAS_VIRTUAL_WIDTH}`);
 
     updatePixelMatrix();
 }
@@ -70,8 +63,6 @@ function updatePixelMatrix() {
 
         pixelMatrixWidth = PIXEL_MATRIX[0].length;
     }
-
-    console.log(`PIXEL_MATRIX: [${PIXEL_MATRIX.length}, ${PIXEL_MATRIX[0].length}]`);
 }
 
 export function drawPixelGrid() {
@@ -97,21 +88,26 @@ export function paintPixelGrid() {
     for (let line = 0; line < PIXEL_MATRIX.length; line++) {
         for (let column = 0; column < PIXEL_MATRIX[0].length; column++) {
             if (PIXEL_MATRIX[line][column] != null) {
-                paintPixel(line, column, PIXEL_MATRIX[line][column]);
+                paintPixel([column, line], PIXEL_MATRIX[line][column]);
             }
         }
     }
 }
 
-export function paintPixel(coordinates, color="#ff0000") {
-    coordinates = coordinates.map(x => parseInt(x.toString()) * PIXEL_SIZE);
+export function paintPixel(coordinates, color, isPermanent) {
+    const [virtualX, virtualY] = coordinates;
+    const [realX,    realY]    = coordinates.map(x => parseInt(x.toString()) * PIXEL_SIZE);
 
     CONTEXT.fillStyle = color;
-    CONTEXT.fillRect(coordinates[0], coordinates[1], PIXEL_SIZE, PIXEL_SIZE);
+    CONTEXT.fillRect(realX, realY, PIXEL_SIZE, PIXEL_SIZE);
+
+    if (isPermanent === true) {
+        PIXEL_MATRIX[virtualY][virtualX] = color;
+    }
 }
 
 export function getCoordinates(event) {
-    let rectangle = $("#canvas")[0].getBoundingClientRect();
+    let rectangle = CANVAS[0].getBoundingClientRect();
 
     let x = event.clientX - rectangle.left;
     let y = event.clientY - rectangle.top;

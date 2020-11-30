@@ -12,7 +12,7 @@ export function initialize() {
 
 function centerEvent(event) {
     center = Canvas.getCoordinates(event);
-    Canvas.paintPixel(center, colors.BLUE);
+    Canvas.paintPixel(center, colors.BLUE, false);
 
     Canvas.CANVAS.off("click").on("click", radiusEvent);
     Instructions.showMessage("Choose another point to define the RADIUS of the circle.");
@@ -31,14 +31,14 @@ function radiusEvent(event) {
 }
 
 function drawEight(x, y) {
-    Canvas.paintPixel([ x + center[0],  y + center[1]]);
-    Canvas.paintPixel([ y + center[0],  x + center[1]]);
-    Canvas.paintPixel([ y + center[0], -x + center[1]]);
-    Canvas.paintPixel([ x + center[0], -y + center[1]]);
-    Canvas.paintPixel([-x + center[0], -y + center[1]]);
-    Canvas.paintPixel([-y + center[0], -x + center[1]]);
-    Canvas.paintPixel([-y + center[0],  x + center[1]]);
-    Canvas.paintPixel([-x + center[0],  y + center[1]]);
+    Canvas.paintPixel([ x + center[0],  y + center[1]], colors.RED, true);
+    Canvas.paintPixel([ y + center[0],  x + center[1]], colors.RED, true);
+    Canvas.paintPixel([ y + center[0], -x + center[1]], colors.RED, true);
+    Canvas.paintPixel([ x + center[0], -y + center[1]], colors.RED, true);
+    Canvas.paintPixel([-x + center[0], -y + center[1]], colors.RED, true);
+    Canvas.paintPixel([-y + center[0], -x + center[1]], colors.RED, true);
+    Canvas.paintPixel([-y + center[0],  x + center[1]], colors.RED, true);
+    Canvas.paintPixel([-x + center[0],  y + center[1]], colors.RED, true);
 }
 
 function draw() {

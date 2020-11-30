@@ -1,7 +1,8 @@
-import * as Instructions from "../elements/Instructions.js";
-
 import * as Canvas from "../elements/Canvas.js";
+import * as Instructions from "../elements/Instructions.js";
 import * as Line from "./Line.js";
+
+import * as colors from "../constants/colors.js";
 
 let initialCoordinates, finalCoordinates;
 let controlPoints, num_lines;
@@ -23,7 +24,7 @@ export function initialize() {
 
 function initialPointEvent(event) {
     initialCoordinates = Canvas.getCoordinates(event);
-    Canvas.paintPixel(initialCoordinates);
+    Canvas.paintPixel(initialCoordinates, colors.RED, true);
     controlPoints.push(initialCoordinates);
 
     Canvas.CANVAS.off("click").on("click", finalPointEvent);
@@ -33,7 +34,7 @@ function initialPointEvent(event) {
 function finalPointEvent(event) {
     finalCoordinates = Canvas.getCoordinates(event);
 
-    Canvas.paintPixel(finalCoordinates);
+    Canvas.paintPixel(finalCoordinates, colors.RED, true);
 
     Canvas.CANVAS.off("click");
     $(document).on("keypress", numLinesEvent);
@@ -52,7 +53,9 @@ function numLinesEvent(event) {
 
 function controlPointsEvent(event) {
     const point = Canvas.getCoordinates(event);
-    Canvas.paintPixel(point);
+
+
+    Canvas.paintPixel(point, colors.BLUE, false);
     controlPoints.push(point);
 
     if (controlPoints.length - 1 === num_lines) {
@@ -65,6 +68,7 @@ function controlPointsEvent(event) {
 
 function belzierPoint(t) {
     const degree = controlPoints.length - 1;
+
 
     for (let r = 1; r <= degree; r++){
         for (let i = 0; i <= degree - r; i++){
@@ -81,10 +85,13 @@ function belzierPoint(t) {
 function draw() {
     let t;
 
+
     for (let i = 1; i <= num_lines; i++) {
         t = (1.0 / num_lines) * i;
         finalCoordinates = belzierPoint(t);
+
         Line.draw(initialCoordinates, finalCoordinates);
+
         initialCoordinates = finalCoordinates;
     }
 }

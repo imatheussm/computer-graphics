@@ -1,10 +1,13 @@
 import * as Canvas from "../elements/Canvas.js";
 import * as Instructions from "../elements/Instructions.js";
 
+import * as colors from "../constants/colors.js";
+
 let point;
 
 export function initialize() {
     point = null;
+
 
     Instructions.showMessage("Choose at least 2 points to draw lines on the screen. Press ENTER to end a polyline.");
 
@@ -15,8 +18,7 @@ export function initialize() {
 function handleClick(event) {
     if (point == null) {
         point = Canvas.getCoordinates(event);
-        console.log(`point: ${point}`);
-        Canvas.paintPixel(point);
+        Canvas.paintPixel(point, colors.RED, true);
     } else {
         const newPoint = Canvas.getCoordinates(event);
         draw(point, newPoint);
@@ -31,8 +33,6 @@ function handleKeyUp(event) {
 }
 
 export function draw(initialCoordinates, finalCoordinates) {
-    console.log("Drawing...");
-
     let [x0, y0] = initialCoordinates.map(c => parseInt(c));
     let [x1, y1] = finalCoordinates.map(c => parseInt(c));
 
@@ -50,6 +50,6 @@ export function draw(initialCoordinates, finalCoordinates) {
         if (twoTimesError > -deltaY) { error -= deltaY; x0 += signalX; }
         if (twoTimesError <  deltaX) { error += deltaX; y0 += signalY; }
 
-        Canvas.paintPixel([x0, y0]);
+        Canvas.paintPixel([x0, y0], colors.RED, true);
     }
 }
