@@ -4,19 +4,16 @@ import * as constants from "../constants.js";
 let center, radius;
 
 export function initializer() {
-    tools.showMessage("Choose a point to define the CENTER of the circle.");
-
     constants.CANVAS.off("click").on("click", centerEvent);
+    tools.showMessage("Choose a point to define the CENTER of the circle.");
 }
 
 function centerEvent(event) {
-    constants.INSTRUCTIONS.html("Choose another point to define the RADIUS of the circle.");
-    constants.INSTRUCTIONS.css("visibility", "visible");
-
     center = tools.getCoordinates(event);
     tools.paintSquare(center, constants.BLUE);
 
     constants.CANVAS.off("click").on("click", radiusEvent);
+    tools.showMessage("Choose another point to define the RADIUS of the circle.");
 }
 
 function radiusEvent(event) {
@@ -32,14 +29,14 @@ function radiusEvent(event) {
 }
 
 function drawEight(x, y) {
-    tools.paintSquare([x + center[0], y + center[1]]);
-    tools.paintSquare([y + center[0], x + center[1]]);
-    tools.paintSquare([y + center[0], -x + center[1]]);
-    tools.paintSquare([x + center[0], -y + center[1]]);
+    tools.paintSquare([ x + center[0],  y + center[1]]);
+    tools.paintSquare([ y + center[0],  x + center[1]]);
+    tools.paintSquare([ y + center[0], -x + center[1]]);
+    tools.paintSquare([ x + center[0], -y + center[1]]);
     tools.paintSquare([-x + center[0], -y + center[1]]);
     tools.paintSquare([-y + center[0], -x + center[1]]);
-    tools.paintSquare([-y + center[0], x + center[1]]);
-    tools.paintSquare([-x + center[0], y + center[1]]);
+    tools.paintSquare([-y + center[0],  x + center[1]]);
+    tools.paintSquare([-x + center[0],  y + center[1]]);
 }
 
 function draw() {

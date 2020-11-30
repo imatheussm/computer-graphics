@@ -1,15 +1,38 @@
+import * as constants from "../constants.js";
 import * as tools from "../tools.js";
 
 
+let point;
+
+export function initializer() {
+    point = null;
+
+    tools.showMessage("Choose at least 2 points to draw lines on the screen. Press ENTER to end a polyline.");
+
+    constants.CANVAS.off("click").on("click", handleClick);
+    $(document).off("keypress").off("keyup").on("keyup", handleKeyUp);
+}
+
+function handleClick(event) {
+    if (point == null) {
+        point = tools.getCoordinates(event);
+        tools.paintSquare(point);
+    } else {
+        const newPoint = tools.getCoordinates(event);
+        draw(point, newPoint);
+        point = newPoint;
+    }
+}
+
+function handleKeyUp(event) {
+    if (event.keyCode === 13) {
+        point = null;
+    }
+}
+
 export function draw(initialCoordinates, finalCoordinates) {
-    // let [x0, y0] = initialCoordinates.map(c => Math.round(c));
-    // let [x1, y1] = finalCoordinates.map(c => Math.round(c));
-
-    // let [x0, y0] = initialCoordinates.map(c => parseInt(c));
-    // let [x1, y1] = finalCoordinates.map(c => parseInt(c));
-
-    let [x0, y0] = initialCoordinates;
-    let [x1, y1] = finalCoordinates;
+    let [x0, y0] = initialCoordinates.map(c => parseInt(c));
+    let [x1, y1] = finalCoordinates.map(c => parseInt(c));
 
     let [deltaX, deltaY] = [Math.abs(x1 - x0), Math.abs(y1 - y0)];
     let [signalX, signalY] = [(x0 < x1 ? 1 : -1), (y0 < y1 ? 1 : -1)];
