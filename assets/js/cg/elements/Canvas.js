@@ -3,8 +3,9 @@ import * as Instructions from "./Instructions.js";
 export const CANVAS  = $("#canvas");
 export const CONTEXT = CANVAS[0].getContext("2d");
 export const DPI     = window.devicePixelRatio;
+export let CANVAS_VIRTUAL_HEIGHT, CANVAS_VIRTUAL_WIDTH;
 
-let CANVAS_REAL_HEIGHT, CANVAS_REAL_WIDTH, CANVAS_VIRTUAL_HEIGHT, CANVAS_VIRTUAL_WIDTH;
+let CANVAS_REAL_HEIGHT, CANVAS_REAL_WIDTH
 let PIXEL_SIZE, PIXEL_MATRIX;
 
 CONTEXT.translate(0.5, 0.5);
@@ -119,4 +120,24 @@ export function getCoordinates(event) {
 
 
     return [Math.floor(x / PIXEL_SIZE), Math.floor(y / PIXEL_SIZE)];
+}
+
+function componentToHex(color_value) {
+  var hex = color_value.toString(16);
+  return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+export function getColorPixel(coordinates){
+    const [virtualX, virtualY] = coordinates;
+    const [realX,    realY]    = coordinates.map(x => parseInt(x.toString()) * PIXEL_SIZE);
+
+    let imgData = CONTEXT.getImageData(realX,realY,1,1);
+    let r = imgData.data[0];
+    let g = imgData.data[1];
+    let b = imgData.data[2];
+    return rgbToHex(r,g,b);
 }
