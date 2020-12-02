@@ -3,9 +3,7 @@ import * as colors from "../constants/colors.js";
 import * as Canvas from "../elements/Canvas.js";
 
 
-let point, pixelColor;
-let upPosition, downPosition, leftPosition, rightPosition;
-let notEdge, notPainted, positive, inLimits;
+let point;
 
 export function initialize() {
     $(document).off("keypress");
@@ -21,17 +19,17 @@ function positionEvent(event) {
 }
 
 function floodFill(position, paintColor, edgeColor) {
-    pixelColor = Canvas.getColorPixel(position);
-    
-    upPosition    = [position[0] + 1, position[1]];
-    downPosition  = [position[0] - 1, position[1]];
-    leftPosition  = [position[0], position[1] - 1];
-    rightPosition = [position[0], position[1] + 1];
+    let pixelColor = Canvas.getColorPixel(position);
 
-    notEdge    = (pixelColor !== edgeColor);
-    notPainted = (pixelColor !== paintColor);
-    positive   = (position[0] >= 0 && position[1] >= 0);
-    inLimits   = (position[0] < Canvas.VIRTUAL_WIDTH && position[1] < Canvas.VIRTUAL_HEIGHT);
+    let upPosition    = [position[0] + 1, position[1]];
+    let downPosition  = [position[0] - 1, position[1]];
+    let leftPosition  = [position[0], position[1] - 1];
+    let rightPosition = [position[0], position[1] + 1];
+
+    let notEdge    = (pixelColor !== edgeColor);
+    let notPainted = (pixelColor !== paintColor);
+    let positive   = (position[0] >= 0 && position[1] >= 0);
+    let inLimits   = (position[0] < Canvas.VIRTUAL_WIDTH && position[1] < Canvas.VIRTUAL_HEIGHT);
 
 
     if (notEdge && notPainted && positive && inLimits) {
