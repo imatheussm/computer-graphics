@@ -1,4 +1,4 @@
-export const INSTRUCTIONS = $("#instructions");
+const INSTRUCTIONS = $("#instructions");
 
 export function showMessage(message = "") {
     if(message === "") {

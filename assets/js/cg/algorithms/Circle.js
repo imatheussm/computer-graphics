@@ -12,6 +12,8 @@ export function initialize() {
 
 function centerEvent(event) {
     center = Canvas.getCoordinates(event);
+
+
     Canvas.paintPixel(center, colors.BLUE, false);
 
     Canvas.CANVAS.off("click").on("click", radiusEvent);
@@ -24,8 +26,8 @@ function radiusEvent(event) {
     const y_dist = Math.pow(center[1] - border[1], 2);
     radius = parseInt(Math.sqrt(x_dist + y_dist).toString());
 
-    draw();
 
+    draw();
     Canvas.refresh();
 
     Canvas.CANVAS.off("click").on("click", centerEvent);
