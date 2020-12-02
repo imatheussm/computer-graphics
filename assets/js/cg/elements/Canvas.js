@@ -101,7 +101,7 @@ function paintPixelGrid() {
 
 export function paintPixel(coordinates, color, isPermanent) {
     const [virtualX, virtualY] = coordinates;
-    const [realX,    realY]    = coordinates.map(x => parseInt(x.toString()) * PIXEL_SIZE);
+    const [realX, realY] = virtualToReal(coordinates);
 
     CONTEXT.fillStyle = color;
     CONTEXT.fillRect(realX, realY, PIXEL_SIZE, PIXEL_SIZE);
@@ -131,10 +131,13 @@ function rgbToHex(r, g, b) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-export function getColorPixel(coordinates){
-    const [virtualX, virtualY] = coordinates;
-    const [realX,    realY]    = coordinates.map(x => parseInt(x.toString()) * PIXEL_SIZE);
+function virtualToReal(coordinates){
+    const [realX, realY] = coordinates.map(x => parseInt(x.toString()) * PIXEL_SIZE);
+    return [realX, realY];
+}
 
+export function getColorPixel(coordinates){
+    const [realX, realY] = virtualToReal(coordinates);
     let imgData = CONTEXT.getImageData(realX,realY,1,1);
     let r = imgData.data[0];
     let g = imgData.data[1];
