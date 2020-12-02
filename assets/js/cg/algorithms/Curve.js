@@ -18,6 +18,8 @@ Math.scalarMultiplication = function(vector, scalar) {
 export function initialize() {
     controlPoints = [];
 
+
+    $(document).off("keypress");
     Canvas.CANVAS.off("click").on("click", initialPointEvent);
     Instructions.showMessage("Choose the INITIAL point of the curve.");
 }
@@ -42,18 +44,17 @@ function finalPointEvent(event) {
 }
 
 function numLinesEvent(event) {
-    if (event.which >= 49 && event.which <= 57){
+    if (event.which >= 49 && event.which <= 57) {
         num_lines = event.which - 48;
         $(document).off("keypress");
         Canvas.CANVAS.on("click", controlPointsEvent);
         $(document).on("keypress", enterKeyEvent);
         Instructions.showMessage("Click on CONTROL points. Press ENTER when you are done.");
     }
-
 }
 
 function enterKeyEvent(event){
-    if (event.which == 13){
+    if (event.which === 13) {
         Canvas.CANVAS.off("click");
         $(document).off("keypress");
         controlPoints.push(finalCoordinates);
@@ -66,6 +67,7 @@ function enterKeyEvent(event){
 function controlPointsEvent(event) {
     const point = Canvas.getCoordinates(event);
 
+
     Canvas.paintPixel(point, colors.BLUE, false);
     controlPoints.push(point);
 }
@@ -74,8 +76,8 @@ function belzierPoint(t) {
     const degree = controlPoints.length - 1;
 
 
-    for (let r = 1; r <= degree; r++){
-        for (let i = 0; i <= degree - r; i++){
+    for (let r = 1; r <= degree; r++) {
+        for (let i = 0; i <= degree - r; i++) {
             const firstMultiplication = Math.scalarMultiplication(controlPoints[i], (1.0 - t));
             const secondMultiplication = Math.scalarMultiplication(controlPoints[i + 1], t);
 

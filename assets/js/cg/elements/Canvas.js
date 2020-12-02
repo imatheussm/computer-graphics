@@ -3,9 +3,9 @@ import * as Instructions from "./Instructions.js";
 export const CANVAS  = $("#canvas");
 export const CONTEXT = CANVAS[0].getContext("2d");
 export const DPI     = window.devicePixelRatio;
-export let CANVAS_VIRTUAL_HEIGHT, CANVAS_VIRTUAL_WIDTH;
+export let VIRTUAL_HEIGHT, VIRTUAL_WIDTH;
 
-let CANVAS_REAL_HEIGHT, CANVAS_REAL_WIDTH
+let REAL_HEIGHT, REAL_WIDTH
 let PIXEL_SIZE, PIXEL_MATRIX;
 
 CONTEXT.translate(0.5, 0.5);
@@ -29,15 +29,15 @@ export function refresh() {
 }
 
 function initializePixelMatrix() {
-    PIXEL_MATRIX = Array(CANVAS_VIRTUAL_HEIGHT).fill(null).map(() => Array(CANVAS_VIRTUAL_WIDTH).fill(null));
+    PIXEL_MATRIX = Array(VIRTUAL_HEIGHT).fill(null).map(() => Array(VIRTUAL_WIDTH).fill(null));
 }
 
 function updateCanvasDimensions() {
-    CANVAS_REAL_HEIGHT = CANVAS[0].offsetHeight * DPI;
-    CANVAS_REAL_WIDTH  = CANVAS[0].offsetWidth  * DPI;
+    REAL_HEIGHT = CANVAS[0].offsetHeight * DPI;
+    REAL_WIDTH  = CANVAS[0].offsetWidth  * DPI;
 
-    CANVAS_VIRTUAL_HEIGHT = Math.ceil(CANVAS_REAL_HEIGHT / PIXEL_SIZE);
-    CANVAS_VIRTUAL_WIDTH  = Math.ceil(CANVAS_REAL_WIDTH  / PIXEL_SIZE);
+    VIRTUAL_HEIGHT = Math.ceil(REAL_HEIGHT / PIXEL_SIZE);
+    VIRTUAL_WIDTH  = Math.ceil(REAL_WIDTH  / PIXEL_SIZE);
 
     updatePixelMatrix();
 }
@@ -45,23 +45,23 @@ function updateCanvasDimensions() {
 function updatePixelMatrix() {
     let [pixelMatrixHeight, pixelMatrixWidth] = [PIXEL_MATRIX.length, PIXEL_MATRIX[0].length];
 
-    while (pixelMatrixHeight > CANVAS_VIRTUAL_HEIGHT) {
+    while (pixelMatrixHeight > VIRTUAL_HEIGHT) {
         PIXEL_MATRIX.pop();
 
         pixelMatrixHeight = PIXEL_MATRIX.length;
-    } while (pixelMatrixHeight < CANVAS_VIRTUAL_HEIGHT) {
+    } while (pixelMatrixHeight < VIRTUAL_HEIGHT) {
         PIXEL_MATRIX.push(Array(pixelMatrixWidth).fill(null));
 
         pixelMatrixHeight = PIXEL_MATRIX.length;
     }
 
-    while (pixelMatrixWidth > CANVAS_VIRTUAL_WIDTH) {
+    while (pixelMatrixWidth > VIRTUAL_WIDTH) {
         for (let i = 0; i < pixelMatrixHeight; i++) {
             PIXEL_MATRIX[i].pop();
         }
 
         pixelMatrixWidth = PIXEL_MATRIX[0].length;
-    } while (pixelMatrixWidth < CANVAS_VIRTUAL_WIDTH) {
+    } while (pixelMatrixWidth < VIRTUAL_WIDTH) {
         for (let i = 0; i < pixelMatrixHeight; i++) {
             PIXEL_MATRIX[i].push(null);
         }
@@ -71,21 +71,21 @@ function updatePixelMatrix() {
 }
 
 function drawPixelGrid() {
-    CANVAS[0].setAttribute('height', CANVAS_REAL_HEIGHT.toString());
-    CANVAS[0].setAttribute('width', CANVAS_REAL_WIDTH.toString());
+    CANVAS[0].setAttribute('height', REAL_HEIGHT.toString());
+    CANVAS[0].setAttribute('width', REAL_WIDTH.toString());
 
     CONTEXT.fillStyle   = "#2b2b2b";
     CONTEXT.strokeStyle = "#3c3c3c";
 
-    for (let x = 0; x < CANVAS_REAL_WIDTH; x += PIXEL_SIZE) {
+    for (let x = 0; x < REAL_WIDTH; x += PIXEL_SIZE) {
         CONTEXT.moveTo(x, 0);
-        CONTEXT.lineTo(x, CANVAS_REAL_HEIGHT);
-    } for (let y = 0; y < CANVAS_REAL_HEIGHT; y += PIXEL_SIZE) {
+        CONTEXT.lineTo(x, REAL_HEIGHT);
+    } for (let y = 0; y < REAL_HEIGHT; y += PIXEL_SIZE) {
         CONTEXT.moveTo(0, y);
-        CONTEXT.lineTo(CANVAS_REAL_WIDTH, y);
+        CONTEXT.lineTo(REAL_WIDTH, y);
     }
 
-    CONTEXT.fillRect(0, 0, CANVAS_REAL_WIDTH, CANVAS_REAL_HEIGHT);
+    CONTEXT.fillRect(0, 0, REAL_WIDTH, REAL_HEIGHT);
     CONTEXT.stroke();
 }
 
