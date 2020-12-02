@@ -18,25 +18,26 @@ function positionEvent(event) {
     floodFill(point, colors.GREEN, colors.RED);
 }
 
-function floodFill(point, paintColor, edgeColor) {
-    let pixelColor = Canvas.getColorPixel(point);
+function floodFill(position, paintColor, edgeColor) {
+    let pixelColor = Canvas.getColorPixel(position);
 
-    let adjacency = [
-        [point[0] + 1, point[1]],
-        [point[0] - 1, point[1]],
-        [point[0], point[1] - 1],
-        [point[0], point[1] + 1],
-    ]
+    let upPosition    = [position[0] + 1, position[1]];
+    let downPosition  = [position[0] - 1, position[1]];
+    let leftPosition  = [position[0], position[1] - 1];
+    let rightPosition = [position[0], position[1] + 1];
 
-    let notEdge    = pixelColor !== edgeColor;
-    let notPainted = pixelColor !== paintColor;
-    let positive   = point[0] >= 0 && point[1] >= 0;
-    let inLimits   = point[0] < Canvas.VIRTUAL_WIDTH && point[1] < Canvas.VIRTUAL_HEIGHT;
+    let notEdge    = (pixelColor !== edgeColor);
+    let notPainted = (pixelColor !== paintColor);
+    let positive   = (position[0] >= 0 && position[1] >= 0);
+    let inLimits   = (position[0] < Canvas.VIRTUAL_WIDTH && position[1] < Canvas.VIRTUAL_HEIGHT);
 
 
     if (notEdge && notPainted && positive && inLimits) {
-        Canvas.paintPixel(point, paintColor, true);
+        Canvas.paintPixel(position, paintColor, true);
 
-        for (let p = 0; p < adjacency.length; p++) floodFill(adjacency[p], paintColor, edgeColor);
+        floodFill(upPosition, paintColor, edgeColor);
+        floodFill(downPosition, paintColor, edgeColor);
+        floodFill(rightPosition, paintColor, edgeColor);
+        floodFill(leftPosition, paintColor, edgeColor);
     }
 }
