@@ -46,25 +46,28 @@ function numLinesEvent(event) {
         num_lines = event.which - 48;
         $(document).off("keypress");
         Canvas.CANVAS.on("click", controlPointsEvent);
-        Instructions.showMessage("Click on CONTROL points.");
+        $(document).on("keypress", enterKeyEvent);
+        Instructions.showMessage("Click on CONTROL points. Press ENTER when you are done.");
     }
 
 }
 
-function controlPointsEvent(event) {
-    const point = Canvas.getCoordinates(event);
-
-
-    Canvas.paintPixel(point, colors.BLUE, false);
-    controlPoints.push(point);
-
-    if (controlPoints.length - 1 === num_lines) {
+function enterKeyEvent(event){
+    if (event.which == 13){
         Canvas.CANVAS.off("click");
+        $(document).off("keypress");
         controlPoints.push(finalCoordinates);
         draw();
         Canvas.refresh();
         initialize();
     }
+}
+
+function controlPointsEvent(event) {
+    const point = Canvas.getCoordinates(event);
+
+    Canvas.paintPixel(point, colors.BLUE, false);
+    controlPoints.push(point);
 }
 
 function belzierPoint(t) {
