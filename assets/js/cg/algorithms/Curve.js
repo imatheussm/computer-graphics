@@ -44,11 +44,11 @@ function finalPointEvent(event) {
 function numLinesEvent(event) {
     if (event.which >= 49 && event.which <= 57){
         num_lines = event.which - 48;
+        $(document).off("keypress");
+        Canvas.CANVAS.on("click", controlPointsEvent);
+        Instructions.showMessage("Click on CONTROL points.");
     }
 
-    $(document).off("keypress");
-    Canvas.CANVAS.on("click", controlPointsEvent);
-    Instructions.showMessage("Click on CONTROL points.");
 }
 
 function controlPointsEvent(event) {
