@@ -1,14 +1,14 @@
-import * as Instructions from "../elements/Instructions.js";
-import * as colors from "../constants/colors.js";
 import * as Canvas from "../elements/Canvas.js";
+import * as Instructions from "../elements/Instructions.js";
 
+import * as colors from "../constants/colors.js";
 
 let point;
 
 export function initialize() {
     $(document).off("keypress");
     Canvas.CANVAS.off("click").on("click", positionEvent);
-    Instructions.showMessage("Choose a point to fill.");
+    Instructions.showMessage("Choose a POINT to fill.");
 }
 
 function positionEvent(event) {
@@ -18,26 +18,25 @@ function positionEvent(event) {
     floodFill(point, colors.GREEN, colors.RED);
 }
 
-function floodFill(position, paintColor, edgeColor) {
-    let pixelColor = Canvas.getColorPixel(position);
+function floodFill(point, paintColor, edgeColor) {
+    let pixelColor = Canvas.getColorPixel(point);
 
-    let upPosition    = [position[0] + 1, position[1]];
-    let downPosition  = [position[0] - 1, position[1]];
-    let leftPosition  = [position[0], position[1] - 1];
-    let rightPosition = [position[0], position[1] + 1];
+    let adjacency = [
+        [point[0] + 1, point[1]],
+        [point[0] - 1, point[1]],
+        [point[0], point[1] - 1],
+        [point[0], point[1] + 1],
+    ]
 
-    let notEdge    = (pixelColor !== edgeColor);
-    let notPainted = (pixelColor !== paintColor);
-    let positive   = (position[0] >= 0 && position[1] >= 0);
-    let inLimits   = (position[0] < Canvas.VIRTUAL_WIDTH && position[1] < Canvas.VIRTUAL_HEIGHT);
+    let notEdge    = pixelColor !== edgeColor;
+    let notPainted = pixelColor !== paintColor;
+    let positive   = point[0] >= 0 && point[1] >= 0;
+    let inLimits   = point[0] < Canvas.VIRTUAL_WIDTH && point[1] < Canvas.VIRTUAL_HEIGHT;
 
 
     if (notEdge && notPainted && positive && inLimits) {
-        Canvas.paintPixel(position, paintColor, true);
+        Canvas.paintPixel(point, paintColor, true);
 
-        floodFill(upPosition, paintColor, edgeColor);
-        floodFill(downPosition, paintColor, edgeColor);
-        floodFill(rightPosition, paintColor, edgeColor);
-        floodFill(leftPosition, paintColor, edgeColor);
+        for (let p = 0; p < adjacency.length; p++) floodFill(adjacency[p], paintColor, edgeColor);
     }
 }
