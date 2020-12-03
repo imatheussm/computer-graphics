@@ -6,29 +6,41 @@ import * as colors from "../constants/colors.js";
 let point, visitedPoints;
 
 export function initialize() {
-    visitedPoints = Array(Canvas.VIRTUAL_HEIGHT).fill(null)
-        .map(() => Array(Canvas.VIRTUAL_WIDTH).fill(null));
+    visitedPoints = [];
 
     $(document).off("keypress");
     Canvas.CANVAS.off("click").on("click", borderEvent);
     Instructions.showMessage("Choose a POINT of the BORDER of the object to fill.");
 }
 
+function isArrayEqual(array1, array2){
+    if (array1.length !== array2.length){
+        return false;
+    }
+    for (let i =0; i <array1.length ; i++){
+        if (array1[i] !== array2[i]){
+            return false;
+        }
+    }
+    return true;
+}
+
+function includesArray(upper_array, bottom_array){
+    for (let i = 0; i < upper_array.length; i++){
+        if (isArrayEqual(upper_array[i], bottom_array)){
+            return true
+        }
+    }
+    return false;
+}
+
 function borderEvent(event) {
     point = Canvas.getCoordinates(event);
 
-    scanLine(point, colors.RED);
-
-    for (let i = 0; i < visitedPoints.length; i++) {
-        for (let j = 0; j < visitedPoints[0].length; j++) {
-            if (visitedPoints[i][j] === true) {
-                Canvas.paintPixel([j, i], colors.BLUE, true);
-            }
-        }
-    }
+    getPolygonPoints(point, colors.RED);
 }
 
-function scanLine(point, edgeColor) {
+function getPolygonPoints(point, edgeColor) {
     let pixelColor = Canvas.getColorPixel(point);
 
     let adjacency = [
@@ -44,15 +56,11 @@ function scanLine(point, edgeColor) {
     ]
 
     let isEdge = pixelColor === edgeColor;
-    let notVisited = visitedPoints[point[1]][point[0]] === null;
+    let notVisited = includesArray(visitedPoints, point) === false;
 
-    if (notVisited) {
-        if (isEdge) {
-            visitedPoints[point[1]][point[0]] = true;
-
-            for (let p = 0; p < adjacency.length; p++) scanLine(adjacency[p], edgeColor);
-        } else {
-            visitedPoints[point[1]][point[0]] = false;
-        }
+    if (notVisited && isEdge) {
+        visitedPoints.push(point);
+        console.log(point);
+        for (let p = 0; p < adjacency.length; p++) getPolygonPoints(adjacency[p], edgeColor);
     }
 }
