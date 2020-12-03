@@ -3,7 +3,7 @@ import * as Instructions from "../elements/Instructions.js";
 
 import * as colors from "../constants/colors.js";
 
-let point, visitedPoints;
+let point, visitedPoints, criticalPoints = [], y_max, y_min;
 
 export function initialize() {
     visitedPoints = [];
@@ -38,6 +38,7 @@ function borderEvent(event) {
     point = Canvas.getCoordinates(event);
 
     getPolygonPoints(point, colors.RED);
+    getBoundingBox();
 }
 
 function getPolygonPoints(point, edgeColor) {
@@ -62,5 +63,45 @@ function getPolygonPoints(point, edgeColor) {
         visitedPoints.push(point);
         console.log(point);
         for (let p = 0; p < adjacency.length; p++) getPolygonPoints(adjacency[p], edgeColor);
+    }
+}
+
+function getInvSlope(p_aux, point){
+    return (parseFloat(p_aux[0] - point[0])) /
+        parseFloat((p_aux[1] - point[1]));
+}
+
+function getBoundingBox(){
+    y_min = Canvas.VIRTUAL_HEIGHT;
+    y_max = 0;
+    criticalPoints = [];
+    for (let i=0; i < visitedPoints.length; i++) {
+        let point = visitedPoints[i];
+        let y = point[1], x = point[0];
+        if (y < y_min) {
+            y_min = y;
+        } else if (y > y_max) {
+            y_max = y;
+        }
+        let p_aux = visitedPoints[(i + 1) % visitedPoints.length];
+        let inv_slope = getInvSlope(p_aux, point);
+        if (y < p_aux[1]) {
+            criticalPoints.push({
+                "index": i,
+                "dir": 1,
+                "x_intersection": x,
+                "inv_slope": inv_slope
+            })
+        }
+        p_aux = visitedPoints[(i - 1 + visitedPoints.length) % visitedPoints.length];
+        if (y < p_aux[1]) {
+            criticalPoints.push({
+                "index": i,
+                "dir": -1,
+                "x_intersection": x,
+                "inv_slope": inv_slope
+            })
+        }
+
     }
 }
