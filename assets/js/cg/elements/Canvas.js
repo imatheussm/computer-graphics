@@ -1,4 +1,5 @@
 import * as Instructions from "./Instructions.js";
+import * as colors from "../constants/colors.js";
 
 export const CANVAS  = $("#canvas");
 export const CONTEXT = CANVAS[0].getContext("2d");
@@ -10,6 +11,9 @@ let PIXEL_SIZE, PIXEL_MATRIX;
 
 CONTEXT.translate(0.5, 0.5);
 
+let HEIGHT_OFFSET = 4;
+let WIDTH_OFFSET = 4;
+
 export function initialize() {
     PIXEL_SIZE = PIXEL_SIZE || 20;
 
@@ -17,9 +21,11 @@ export function initialize() {
 
     updateCanvasDimensions();
     drawPixelGrid();
+    draw_trim_area();
 
     CANVAS.off("click").off("keypress").off("keyup");
     Instructions.showMessage("Select an algorithm to continue.");
+
 }
 
 export function refresh() {
@@ -143,4 +149,17 @@ export function getColorPixel(coordinates){
     let g = imgData.data[1];
     let b = imgData.data[2];
     return rgbToHex(r,g,b);
+}
+
+function draw_trim_area(){
+    console.log(VIRTUAL_HEIGHT, VIRTUAL_WIDTH);
+    for (let x=0; x < VIRTUAL_WIDTH; x++){
+        for (let y=0; y < VIRTUAL_HEIGHT; y++){
+            let inWidth = (x < WIDTH_OFFSET) || ((VIRTUAL_WIDTH - x) <= WIDTH_OFFSET)
+            let inHeight = (y < HEIGHT_OFFSET) || ((VIRTUAL_HEIGHT - y) <= HEIGHT_OFFSET)
+            if (inWidth || inHeight) {
+                paintPixel([x, y], colors.DARKBLUE, true);
+            }
+        }
+    }
 }

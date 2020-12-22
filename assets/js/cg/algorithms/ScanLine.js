@@ -38,6 +38,11 @@ function borderEvent(event) {
     point = Canvas.getCoordinates(event);
     visitedPoints = [];
     getPolygonPoints(point, colors.RED);
+    for (let i=0; i< visitedPoints.length; i++){
+        console.log(visitedPoints[i]);
+    }
+    console.log("\n");
+
     getBoundingBox();
     scanLine();
 }
@@ -121,10 +126,6 @@ function bubbleSortPoint(inputArr){
             }
         }
     } while (swapped);
-    console.log("\n");
-    for (let i=0; i< len; i++){
-        console.log(inputArr[i]);
-    }
     return inputArr;
 }
 
