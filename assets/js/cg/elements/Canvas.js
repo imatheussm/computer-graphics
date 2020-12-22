@@ -14,6 +14,10 @@ CONTEXT.translate(0.5, 0.5);
 let HEIGHT_OFFSET = 4;
 let WIDTH_OFFSET = 4;
 
+let VIRTUAL_PAINT_HEIGHT;
+let VIRTUAL_PAINT_WIDTH;
+
+
 export function initialize() {
     PIXEL_SIZE = PIXEL_SIZE || 20;
 
@@ -21,6 +25,8 @@ export function initialize() {
 
     updateCanvasDimensions();
     drawPixelGrid();
+    VIRTUAL_PAINT_HEIGHT = VIRTUAL_HEIGHT - 2 * HEIGHT_OFFSET;
+    VIRTUAL_PAINT_WIDTH = VIRTUAL_WIDTH - 2 * WIDTH_OFFSET;
     draw_trim_area();
 
     CANVAS.off("click").off("keypress").off("keyup");
@@ -162,4 +168,19 @@ function draw_trim_area(){
             }
         }
     }
+}
+
+
+function binCodePixel(coordinates){
+    let x = coordinates[0];
+    let y = coordinates[1];
+    let firstBit = Math.sign(VIRTUAL_PAINT_HEIGHT - y).toString();
+    let secondBit = Math.sign(y - HEIGHT_OFFSET).toString();
+    let thirdBit = Math.sign(VIRTUAL_PAINT_WIDTH - x).toString();
+    let fourthBit = Math.sign(x - WIDTH_OFFSET).toString();
+    return firstBit + secondBit + thirdBit + fourthBit;
+}
+
+function isInPaintableArea(coordinates){
+
 }
