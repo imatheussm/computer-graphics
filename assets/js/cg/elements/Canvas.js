@@ -1,5 +1,5 @@
 import * as Instructions from "./Instructions.js";
-import * as colors from "../constants/colors.js";
+import * as colors from "../constants/Colors.js";
 import * as util from "../algorithms/ScanLine.js";
 
 export const CANVAS  = $("#canvas");
