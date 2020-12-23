@@ -1,5 +1,6 @@
 import * as Instructions from "./Instructions.js";
 import * as colors from "../constants/colors.js";
+import * as util from "../algorithms/ScanLine.js";
 
 export const CANVAS  = $("#canvas");
 export const CONTEXT = CANVAS[0].getContext("2d");
@@ -11,8 +12,8 @@ let PIXEL_SIZE, PIXEL_MATRIX;
 
 CONTEXT.translate(0.5, 0.5);
 
-let HEIGHT_OFFSET = 4;
-let WIDTH_OFFSET = 4;
+export let HEIGHT_OFFSET = 4;
+export let WIDTH_OFFSET = 4;
 
 let VIRTUAL_PAINT_HEIGHT;
 let VIRTUAL_PAINT_WIDTH;
@@ -112,6 +113,7 @@ function paintPixelGrid() {
 }
 
 export function paintPixel(coordinates, color, isPermanent) {
+
     const [virtualX, virtualY] = coordinates;
     const [realX, realY] = virtualToReal(coordinates);
 
@@ -158,7 +160,6 @@ export function getColorPixel(coordinates){
 }
 
 function draw_trim_area(){
-    console.log(VIRTUAL_HEIGHT, VIRTUAL_WIDTH);
     for (let x=0; x < VIRTUAL_WIDTH; x++){
         for (let y=0; y < VIRTUAL_HEIGHT; y++){
             let inWidth = (x < WIDTH_OFFSET) || ((VIRTUAL_WIDTH - x) <= WIDTH_OFFSET)
@@ -170,17 +171,37 @@ function draw_trim_area(){
     }
 }
 
-
-function binCodePixel(coordinates){
-    let x = coordinates[0];
-    let y = coordinates[1];
-    let firstBit = Math.sign(VIRTUAL_PAINT_HEIGHT - y).toString();
-    let secondBit = Math.sign(y - HEIGHT_OFFSET).toString();
-    let thirdBit = Math.sign(VIRTUAL_PAINT_WIDTH - x).toString();
-    let fourthBit = Math.sign(x - WIDTH_OFFSET).toString();
-    return firstBit + secondBit + thirdBit + fourthBit;
+function customSign(x){
+    return x < 0;
 }
 
-function isInPaintableArea(coordinates){
 
+export function binCodePixel(coordinates){
+    let x = coordinates[0];
+    let y = coordinates[1];
+    let firstBit = y < HEIGHT_OFFSET;
+    let secondBit = y > (VIRTUAL_HEIGHT - HEIGHT_OFFSET - 1);
+    let thirdBit = x > (VIRTUAL_WIDTH - WIDTH_OFFSET - 1);
+    let fourthBit = x < WIDTH_OFFSET;
+    return [firstBit, secondBit, thirdBit, fourthBit]
+}
+
+export function isInPaintableArea(coordinates){
+    return util.isArrayEqual(binCodePixel(coordinates), [false, false, false, false]);
+}
+
+export function listAnd(list1, list2){
+    let result = [];
+    for (let i =0; i < list1.length; i++){
+        result.push(list1[i] && list2[i]);
+    }
+    return result;
+}
+
+export function listOr(list1, list2){
+    let result = [];
+    for (let i =0; i < list1.length; i++){
+        result.push(list1[i] || list2[i]);
+    }
+    return result;
 }

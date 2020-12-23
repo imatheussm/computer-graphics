@@ -13,7 +13,7 @@ export function initialize() {
     Instructions.showMessage("Choose a POINT of the BORDER of the object to fill.");
 }
 
-function isArrayEqual(array1, array2){
+export function isArrayEqual(array1, array2){
     if (array1.length !== array2.length){
         return false;
     }
