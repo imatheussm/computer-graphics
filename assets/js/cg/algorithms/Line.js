@@ -57,10 +57,8 @@ function cohenSutherland(pointA, pointB){
         let firstBitDifference = getFirstBitDifference(binCodePointA,
                                                        binCodePointB);
         let borderLine = getBorderLine(firstBitDifference);
-        console.log(borderLine[0], borderLine[1]);
         let intersectionPoint = getIntersectionPoint(borderLine, [pointA,
                                                                           pointB])
-        console.log(intersectionPoint);
         if (Canvas.isInPaintableArea(intersectionPoint)) {
             paintPixel(intersectionPoint, colors.RED, true);
         }
@@ -89,7 +87,6 @@ function getIntersectionPoint(borderLine, realLine){
         yi = (xi - x1)*(y2-y1)/(x2-x1) + y1;
     } else if (borderLine[0][1] === borderLine[1][1]){
         yi = borderLine[0][1];
-        console.log('uhuheg');
         xi = (yi - y1)*(x2-x1)/(y2-y1) + x1;
     }
     return [Math.round(xi), Math.round(yi)];
