@@ -2,6 +2,7 @@ import * as Canvas from "../elements/Canvas.js";
 import * as Instructions from "../elements/Instructions.js";
 import * as Array from "../util/Array.js";
 import * as colors from "../constants/Colors.js";
+import * as Util from "../util/UtilAlgorithms.js";
 import {
     HEIGHT_OFFSET, paintPixel,
     VIRTUAL_HEIGHT,
@@ -59,7 +60,7 @@ function cohenSutherland(pointA, pointB){
         let firstBitDifference = getFirstBitDifference(binCodePointA,
                                                        binCodePointB);
         let borderLine = getBorderLine(firstBitDifference);
-        let intersectionPoint = getIntersectionPoint(borderLine, [pointA,
+        let intersectionPoint = Util.getIntersectionPoint(borderLine, [pointA,
                                                                           pointB])
         if (Canvas.isInPaintableArea(intersectionPoint)) {
             paintPixel(intersectionPoint, colors.RED, true);
@@ -71,24 +72,6 @@ function cohenSutherland(pointA, pointB){
         }
 
     }
-}
-
-function getIntersectionPoint(borderLine, realLine){
-    let x1 = realLine[0][0];
-    let x2 = realLine[1][0];
-    let y1 = realLine[0][1];
-    let y2 = realLine[1][1];
-    let xi, yi;
-
-    if (borderLine[0][0] === borderLine[1][0]) {
-        xi = borderLine[0][0];
-
-        yi = (xi - x1)*(y2-y1)/(x2-x1) + y1;
-    } else if (borderLine[0][1] === borderLine[1][1]){
-        yi = borderLine[0][1];
-        xi = (yi - y1)*(x2-x1)/(y2-y1) + x1;
-    }
-    return [Math.round(xi), Math.round(yi)];
 }
 
 function getBorderLine(diffBit){

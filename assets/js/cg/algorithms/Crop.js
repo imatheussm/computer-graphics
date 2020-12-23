@@ -1,64 +1,109 @@
 import * as Canvas from "../elements/Canvas.js";
 import * as Instructions from "../elements/Instructions.js";
-
 import * as colors from "../constants/Colors.js";
+import * as Line from "../algorithms/Line.js";
+import * as Util from "../util/UtilAlgorithms.js";
 
-let center, radius;
+let topLeftPoint, bottomRightPoint;
 
 export function initialize() {
-    Canvas.CANVAS.off("click").on("click", centerEvent);
-    Instructions.showMessage("Choose a point to define the CENTER of the circle.");
+    Canvas.CANVAS.off("click").on("click", topLeftEvent);
+    Instructions.showMessage("Choose a point to define the TOP-LEFT border of the crop area.");
 }
 
-function centerEvent(event) {
-    center = Canvas.getCoordinates(event);
+function topLeftEvent(event) {
+    topLeftPoint = Canvas.getCoordinates(event);
+    if (Canvas.getColorPixel(topLeftPoint) !== colors.RED) {
+        Canvas.paintPixel(topLeftPoint, colors.DARKBLUE, true);
+    }
 
-
-    Canvas.paintPixel(center, colors.BLUE, false);
-
-    Canvas.CANVAS.off("click").on("click", radiusEvent);
-    Instructions.showMessage("Choose another point to define the RADIUS of the circle.");
+    Canvas.CANVAS.off("click").on("click", bottomRightEvent);
+    Instructions.showMessage("Choose another point to define the BOTTOM-RIGHT border of the crop area.");
 }
 
-function radiusEvent(event) {
-    const border = Canvas.getCoordinates(event);
-    const x_dist = Math.pow(center[0] - border[0], 2);
-    const y_dist = Math.pow(center[1] - border[1], 2);
-    radius = parseInt(Math.sqrt(x_dist + y_dist).toString());
+function bottomRightEvent(event) {
+    bottomRightPoint = Canvas.getCoordinates(event);
+    let toRight = bottomRightPoint[0] > topLeftPoint[0];
+    let toBottom = bottomRightPoint[1] > topLeftPoint[1];
+    if (toRight && toBottom) {
 
-
-    draw();
-    Canvas.refresh();
-
-    Canvas.CANVAS.off("click").on("click", centerEvent);
-    Instructions.showMessage("Choose a point to define the CENTER of the circle.");
+        if (Canvas.getColorPixel(bottomRightPoint) !== colors.RED) {
+            Canvas.paintPixel(bottomRightPoint, colors.DARKBLUE, true);
+        }
+        Canvas.CANVAS.off("click")
+        draw();
+        Canvas.refresh();
+        Instructions.showMessage("Select an algorithm to continue.");
+    }
 }
 
-function drawEight(x, y) {
-    Canvas.paintPixel([ x + center[0],  y + center[1]], colors.RED, true);
-    Canvas.paintPixel([ y + center[0],  x + center[1]], colors.RED, true);
-    Canvas.paintPixel([ y + center[0], -x + center[1]], colors.RED, true);
-    Canvas.paintPixel([ x + center[0], -y + center[1]], colors.RED, true);
-    Canvas.paintPixel([-x + center[0], -y + center[1]], colors.RED, true);
-    Canvas.paintPixel([-y + center[0], -x + center[1]], colors.RED, true);
-    Canvas.paintPixel([-y + center[0],  x + center[1]], colors.RED, true);
-    Canvas.paintPixel([-x + center[0],  y + center[1]], colors.RED, true);
+function isInsideEdge(edgeLine, point, mode){
+    if (mode === "left"){
+        return point[0] >= edgeLine[0][0];
+    } else if (mode === "right"){
+        return point[0] <= edgeLine[0][0];
+    } else if (mode === "bottom") {
+        return point[1] <= edgeLine[0][1];
+    } else if (mode === "top") {
+        return point[1] >= edgeLine[0][1];
+    }
 }
 
 function draw() {
-    let [x, y] = [radius, 0];
-    let error = 1 - x;
+    let polygonPoints = Line.visitedPoints
 
-    while (x >= y) {
-        drawEight(x, y);
-        y++;
+    let left = topLeftPoint[0] + 1;
+    let top = topLeftPoint[1] + 1;
+    let bottom = bottomRightPoint[1] - 1;
+    let right = bottomRightPoint[0] - 1;
 
-        if (error < 0) {
-            error += 2 * y + 1;
-        } else {
-            x--;
-            error += 2 * (y - x + 1);
+
+    let edgeLines = { "left": [[left, bottom], [left, top]],
+                      "right": [[right, top], [right, bottom]],
+                      "bottom": [[right, bottom], [left, bottom]],
+                      "top": [[left, top], [right, top]]
+                    };
+    let originalPolygonPoints = polygonPoints.slice(0, polygonPoints.length);
+    let newPolygonPoints = polygonPoints.slice(0, polygonPoints.length);
+    for (let key in edgeLines){
+        polygonPoints = newPolygonPoints.slice(0, newPolygonPoints.length);
+        newPolygonPoints = [];
+
+        let numPolygonPoints = polygonPoints.length;
+        for (let pointIndex=0; pointIndex < numPolygonPoints; pointIndex++){
+            let currentPoint = polygonPoints[pointIndex];
+            let previousPoint = polygonPoints[(pointIndex + numPolygonPoints - 1) % numPolygonPoints];
+
+            let intersecPoint = Util.getIntersectionPoint(edgeLines[key], [previousPoint, currentPoint]);
+
+            if (isInsideEdge(edgeLines[key], currentPoint, key)) {
+                if (!isInsideEdge(edgeLines[key], previousPoint, key)){
+                    newPolygonPoints.push(intersecPoint);
+                }
+                newPolygonPoints.push(currentPoint);
+            } else if (isInsideEdge(edgeLines[key], previousPoint, key)){
+                newPolygonPoints.push(intersecPoint);
+            }
         }
     }
 
+    //erase last polygon
+    for (let i=0; i< originalPolygonPoints.length; i++){
+        Line.draw(originalPolygonPoints[i], originalPolygonPoints[(i+1) % originalPolygonPoints.length], colors.BLACK);
+    }
+
+    //draw new polygon
+    for (let i=0; i< newPolygonPoints.length; i++){
+        Line.draw(newPolygonPoints[i], newPolygonPoints[(i+1) % newPolygonPoints.length]);
+    }
+
+    //draw border
+    Line.draw([left-1, top-1] ,[right+1, top-1], colors.DARKBLUE);
+    Line.draw([right+1, top-1] ,[right+1, bottom+1], colors.DARKBLUE);
+    Line.draw([right+1, bottom+1] ,[left-1, bottom+1], colors.DARKBLUE);
+    Line.draw([left-1, bottom+1] ,[left-1, top-1], colors.DARKBLUE);
 }
+
+
+
+
