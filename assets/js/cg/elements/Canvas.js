@@ -83,11 +83,11 @@ function updatePixelMatrix() {
     }
 }
 
-function drawPixelGrid() {
+export function drawPixelGrid() {
     CANVAS[0].setAttribute('height', REAL_HEIGHT.toString());
     CANVAS[0].setAttribute('width', REAL_WIDTH.toString());
 
-    CONTEXT.fillStyle   = "#2b2b2b";
+    CONTEXT.fillStyle   = colors.BLACK;
     CONTEXT.strokeStyle = "#3c3c3c";
 
     for (let x = 0; x < REAL_WIDTH; x += PIXEL_SIZE) {

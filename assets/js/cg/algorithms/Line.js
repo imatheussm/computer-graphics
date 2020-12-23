@@ -10,9 +10,11 @@ import {
 
 
 let point, x0, x1, y0, y1, deltaX, deltaY, signalX, signalY, error, twoTimesError;
+export let visitedPoints;
 
 export function initialize() {
     point = null;
+    visitedPoints = [];
 
     Canvas.CANVAS.off("click").on("click", handleClick);
     $(document).off("keypress").off("keyup").on("keyup", handleKeyUp);
@@ -32,7 +34,9 @@ function handleClick(event) {
         const newPoint = Canvas.getCoordinates(event);
         cohenSutherland(point, newPoint);
         if (point != null){
+            visitedPoints.push(point);
             point = newPoint;
+
         }
 
 
@@ -117,7 +121,7 @@ function handleKeyUp(event) {
     if (event.keyCode === 13) point = null;
 }
 
-export function draw(initialCoordinates, finalCoordinates) {
+export function draw(initialCoordinates, finalCoordinates, color = colors.RED) {
     [x0, y0] = initialCoordinates.map(c => parseInt(c));
     [x1, y1] = finalCoordinates.map(c => parseInt(c));
 
@@ -135,6 +139,6 @@ export function draw(initialCoordinates, finalCoordinates) {
         if (twoTimesError > -deltaY) { error -= deltaY; x0 += signalX; }
         if (twoTimesError <  deltaX) { error += deltaX; y0 += signalY; }
 
-        Canvas.paintPixel([x0, y0], colors.RED, true);
+        Canvas.paintPixel([x0, y0], color, true);
     }
 }
