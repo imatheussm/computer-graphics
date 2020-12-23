@@ -1,8 +1,7 @@
 import * as Canvas from "../elements/Canvas.js";
 import * as Instructions from "../elements/Instructions.js";
-
+import * as Array from "../util/Array.js";
 import * as colors from "../constants/Colors.js";
-import * as util from "./ScanLine.js";
 import {
     HEIGHT_OFFSET, paintPixel,
     VIRTUAL_HEIGHT,
@@ -42,15 +41,14 @@ function handleClick(event) {
 
 function cohenSutherland(pointA, pointB){
     let binCodePointA = Canvas.binCodePixel(pointA);
-    console.log(binCodePointA);
     let binCodePointB = Canvas.binCodePixel(pointB);
-    let or = Canvas.listOr(binCodePointA, binCodePointB);
-    let and = Canvas.listAnd(binCodePointA, binCodePointB);
+    let or = Array.arrayOr(binCodePointA, binCodePointB);
+    let and = Array.arrayAnd(binCodePointA, binCodePointB);
     let allFalse = [false, false, false, false]
-    if (util.isArrayEqual(or, allFalse)){
+    if (Array.isArrayEqual(or, allFalse)){
         draw(pointA, pointB);
         Canvas.refresh();
-    } else if (anyDifference(and, allFalse)) {
+    } else if (Array.anyDifference(and, allFalse)) {
         Canvas.refresh();
         initialize();
     } else {
@@ -70,9 +68,6 @@ function cohenSutherland(pointA, pointB){
 
     }
 }
-
-
-
 
 function getIntersectionPoint(borderLine, realLine){
     let x1 = realLine[0][0];
@@ -113,15 +108,6 @@ function getFirstBitDifference(list1, list2){
     for (let i=0; i<list1.length; i++) {
         if (list1[i] || list2[i]) {
             return i + 1;
-        }
-    }
-    return false;
-}
-
-function anyDifference(list1, list2){
-    for (let i =0; i<list1.length; i++){
-        if (list1[i] !== list2[i]){
-            return true;
         }
     }
     return false;

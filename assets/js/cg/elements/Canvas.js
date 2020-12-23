@@ -1,6 +1,6 @@
 import * as Instructions from "./Instructions.js";
 import * as colors from "../constants/Colors.js";
-import * as util from "../algorithms/ScanLine.js";
+import * as ArrayMethods from "../util/Array.js";
 
 export const CANVAS  = $("#canvas");
 export const CONTEXT = CANVAS[0].getContext("2d");
@@ -171,11 +171,6 @@ function draw_trim_area(){
     }
 }
 
-function customSign(x){
-    return x < 0;
-}
-
-
 export function binCodePixel(coordinates){
     let x = coordinates[0];
     let y = coordinates[1];
@@ -187,21 +182,5 @@ export function binCodePixel(coordinates){
 }
 
 export function isInPaintableArea(coordinates){
-    return util.isArrayEqual(binCodePixel(coordinates), [false, false, false, false]);
-}
-
-export function listAnd(list1, list2){
-    let result = [];
-    for (let i =0; i < list1.length; i++){
-        result.push(list1[i] && list2[i]);
-    }
-    return result;
-}
-
-export function listOr(list1, list2){
-    let result = [];
-    for (let i =0; i < list1.length; i++){
-        result.push(list1[i] || list2[i]);
-    }
-    return result;
+    return ArrayMethods.isArrayEqual(binCodePixel(coordinates), [false, false, false, false]);
 }
