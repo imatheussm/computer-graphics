@@ -6,6 +6,14 @@ export function arrayAnd(array1, array2){
     return result;
 }
 
+export function arrayScalarSum(array, scalar){
+    let result = [];
+    for (let i=0; i < array1.length; i++){
+        result.push(array[i] + scalar);
+    }
+    return result;
+}
+
 export function arrayOr(array1, array2){
     let result = [];
     for (let i =0; i < array1.length; i++){
