@@ -7,6 +7,7 @@ import * as ScanLine from "../algorithms/ScanLine.js";
 import * as Crop from "../algorithms/Crop.js";
 import * as Translation from "../algorithms/Translation.js";
 import * as Scale from "../algorithms/Scale.js";
+import * as Rotation from "../algorithms/Rotation.js";
 
 
 export function initialize() {
@@ -19,4 +20,5 @@ export function initialize() {
     $("#crop-button").on("click", Crop.initialize);
     $("#translation-button").on("click", Translation.initialize);
     $("#scale-button").on("click", Scale.initialize);
+    $("#rotation-button").on("click", Rotation.initialize);
 }
