@@ -17,7 +17,7 @@ function borderEvent(event) {
     countDigit = 0;
     newPoints = [];
     paintPixel(point, colors.BLUE, false);
-    Instructions.showMessage("Type two numbers to indicate the rotation degree");
+    Instructions.showMessage("Type three numbers to indicate the rotation degree");
     Canvas.CANVAS.off("click");
     $(document).on("keypress", getRotationDegreesEvent);
 }
