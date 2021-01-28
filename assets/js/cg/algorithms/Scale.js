@@ -28,7 +28,6 @@ function xScaleSignEvent(event) {
         } else {
             xScaleSign = 1;
         }
-        console.log('xscaleSign',xScaleSign);
         $(document).off("keypress");
         $(document).on("keypress", xScaleMagnitudeEvent);
         Instructions.showMessage("Pres on a key [1-9] to define the magnitue of the scale on the X axis.");
@@ -51,7 +50,6 @@ function yScaleSignEvent(event) {
         } else {
             yScaleSign = 1;
         }
-        console.log('yscaleSign',yScaleSign);
         Instructions.showMessage("Pres on a key [1-9] to define the magnitue of the scale on the Y axis.");
         $(document).off("keypress").on("keypress", yScaleMagnitudeEvent);
     }
@@ -80,7 +78,7 @@ function runScale() {
     let scale_y = yScale * yScaleSign;
     matrix = [[scale_x, 0], [0, scale_y]];
 
-    for(let i=0; i< Line.visitedPoints.length; i++){
+    for(let i = 0; i < Line.visitedPoints.length; i++){
         let newPoint = [0, 0];
         newPoint[0] = Line.visitedPoints[i][0];
         newPoint[1] = Line.visitedPoints[i][1];
@@ -88,6 +86,7 @@ function runScale() {
         newPoint[1] -= y0;
         newPoints.push(newPoint);
     }
+
     draw();
 }
 
@@ -114,8 +113,7 @@ function draw(){
     }
 }
 
-function matrixMult(point, matrix){
-
+function matrixMult(point, matrix) {
     let result = [0,0];
     let fixedPoint = Line.visitedPoints[0];
 

@@ -1,6 +1,6 @@
 import * as Instructions from "./Instructions.js";
 import * as colors from "../constants/Colors.js";
-import * as ArrayMethods from "../util/Array.js";
+import * as ArrayMethods from "../utilities/Array.js";
 
 export const CANVAS  = $("#canvas");
 export const CONTEXT = CANVAS[0].getContext("2d");
@@ -28,7 +28,7 @@ export function initialize() {
     drawPixelGrid();
     VIRTUAL_PAINT_HEIGHT = VIRTUAL_HEIGHT - 2 * HEIGHT_OFFSET;
     VIRTUAL_PAINT_WIDTH = VIRTUAL_WIDTH - 2 * WIDTH_OFFSET;
-    draw_trim_area();
+    drawTrimArea();
 
     CANVAS.off("click").off("keypress").off("keyup");
     Instructions.showMessage("Select an algorithm to continue.");
@@ -39,6 +39,7 @@ export function refresh() {
     updateCanvasDimensions();
     drawPixelGrid();
     paintPixelGrid();
+    drawTrimArea();
 }
 
 function initializePixelMatrix() {
@@ -113,7 +114,6 @@ function paintPixelGrid() {
 }
 
 export function paintPixel(coordinates, color, isPermanent) {
-
     const [virtualX, virtualY] = coordinates;
     const [realX, realY] = virtualToReal(coordinates);
 
@@ -124,6 +124,13 @@ export function paintPixel(coordinates, color, isPermanent) {
         virtualX < PIXEL_MATRIX[0].length && virtualY < PIXEL_MATRIX.length) {
         PIXEL_MATRIX[virtualY][virtualX] = color;
     }
+}
+
+export function getPixelColor(coordinates) {
+    const [virtualX, virtualY] = coordinates;
+
+
+    return PIXEL_MATRIX[virtualY, virtualX];
 }
 
 export function getCoordinates(event) {
@@ -137,48 +144,56 @@ export function getCoordinates(event) {
 }
 
 function componentToHex(color_value) {
-  var hex = color_value.toString(16);
-  return hex.length == 1 ? "0" + hex : hex;
+  let hex = color_value.toString(16);
+  return hex.length === 1 ? "0" + hex : hex;
 }
 
-function rgbToHex(r, g, b) {
-  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+function rgbToHex(red, green, blue) {
+    return "#" + componentToHex(red) + componentToHex(green) + componentToHex(blue);
 }
 
 function virtualToReal(coordinates){
     const [realX, realY] = coordinates.map(x => parseInt(x.toString()) * PIXEL_SIZE);
+
+
     return [realX, realY];
 }
 
 export function getColorPixel(coordinates){
     const [realX, realY] = virtualToReal(coordinates);
-    let imgData = CONTEXT.getImageData(realX,realY,1,1);
-    let r = imgData.data[0];
-    let g = imgData.data[1];
-    let b = imgData.data[2];
-    return rgbToHex(r,g,b);
+
+    let imgData = CONTEXT.getImageData(realX, realY, 1, 1);
+
+    let red = imgData.data[0];
+    let green = imgData.data[1];
+    let blue = imgData.data[2];
+
+
+    return rgbToHex(red, green, blue);
 }
 
-function draw_trim_area(){
-    for (let x=0; x < VIRTUAL_WIDTH; x++){
-        for (let y=0; y < VIRTUAL_HEIGHT; y++){
+function drawTrimArea() {
+    for (let x = 0; x < VIRTUAL_WIDTH; x++) {
+        for (let y = 0; y < VIRTUAL_HEIGHT; y++) {
             let inWidth = (x < WIDTH_OFFSET) || ((VIRTUAL_WIDTH - x) <= WIDTH_OFFSET)
             let inHeight = (y < HEIGHT_OFFSET) || ((VIRTUAL_HEIGHT - y) <= HEIGHT_OFFSET)
             if (inWidth || inHeight) {
-                paintPixel([x, y], colors.DARKBLUE, true);
+                paintPixel([x, y], colors.DARK_BLUE);
             }
         }
     }
 }
 
 export function binCodePixel(coordinates){
-    let x = coordinates[0];
-    let y = coordinates[1];
+    let [x, y] = coordinates;
+
     let firstBit = y < HEIGHT_OFFSET;
     let secondBit = y > (VIRTUAL_HEIGHT - HEIGHT_OFFSET - 1);
     let thirdBit = x > (VIRTUAL_WIDTH - WIDTH_OFFSET - 1);
     let fourthBit = x < WIDTH_OFFSET;
-    return [firstBit, secondBit, thirdBit, fourthBit]
+
+
+    return [firstBit, secondBit, thirdBit, fourthBit];
 }
 
 export function isInPaintableArea(coordinates){

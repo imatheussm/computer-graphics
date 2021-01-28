@@ -43,16 +43,13 @@ function getRotationDegreesEvent(event){
 }
 
 function runRotation() {
-
     let fixed_point = Line.visitedPoints[0];
-    let x0 = fixed_point[0];
-    let y0 = fixed_point[1];
+    let [x0, y0] = fixed_point[0];
 
     matrix = [[Math.cos(rotationDegrees), -Math.sin(rotationDegrees)],
               [Math.sin(rotationDegrees), Math.cos(rotationDegrees)]];
 
-    //Translation
-    for(let i=0; i< Line.visitedPoints.length; i++){
+    for(let i = 0; i< Line.visitedPoints.length; i++){
         let newPoint = [0, 0];
         newPoint[0] = Line.visitedPoints[i][0];
         newPoint[1] = Line.visitedPoints[i][1];
@@ -65,24 +62,22 @@ function runRotation() {
 
 function draw(){
     let scaledCoordinates = [];
+
     for (let i=0; i < newPoints.length; i++){
         let point = newPoints[i];
         scaledCoordinates.push(matrixMult(point, matrix));
     }
 
-    //erase previous points
-    for (let i=0; i <Line.visitedPoints.length; i++){
+    for (let i = 0; i <Line.visitedPoints.length; i++){
         let previousPoint = Line.visitedPoints[i];
         let nextPoint = Line.visitedPoints[(i+1) % Line.visitedPoints.length];
         Line.draw(previousPoint, nextPoint, colors.BLACK);
     }
 
-
-    for (let i=0; i < scaledCoordinates.length; i++){
+    for (let i = 0; i < scaledCoordinates.length; i++){
         let previousPoint = scaledCoordinates[i];
         previousPoint[0] = Math.round(previousPoint[0]);
         previousPoint[1] = Math.round(previousPoint[1]);
-        console.log(previousPoint);
         let nextPoint = scaledCoordinates[(i+1) % scaledCoordinates.length];
         nextPoint[0] = Math.round(nextPoint[0]);
         nextPoint[1] = Math.round(nextPoint[1]);
@@ -90,8 +85,7 @@ function draw(){
     }
 }
 
-function matrixMult(point, matrix){
-
+function matrixMult(point, matrix) {
     let result = [0,0];
     let fixedPoint = Line.visitedPoints[0];
 

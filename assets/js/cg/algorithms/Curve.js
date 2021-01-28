@@ -5,7 +5,8 @@ import * as Line from "./Line.js";
 import * as colors from "../constants/Colors.js";
 
 let initialCoordinates, finalCoordinates;
-let controlPoints, num_lines;
+let controlPoints, numLines;
+let t;
 
 Math.vectorAddition = function(firstVector, secondVector) {
     return firstVector.map((x, i) => x + secondVector[i])
@@ -38,22 +39,12 @@ function finalPointEvent(event) {
 
     Canvas.paintPixel(finalCoordinates, colors.RED, true);
 
-    Canvas.CANVAS.off("click");
-    $(document).on("keypress", numLinesEvent);
-    Instructions.showMessage("Press a number key (1-9) with the number of lines to draw the curve.");
+    $(document).on("keypress", enterKeyEvent);
+    Canvas.CANVAS.off("click").on("click", controlPointsEvent);
+    Instructions.showMessage("Click on CONTROL points. Press ENTER when you are done.");
 }
 
-function numLinesEvent(event) {
-    if (event.which >= 49 && event.which <= 57) {
-        num_lines = event.which - 48;
-        $(document).off("keypress");
-        Canvas.CANVAS.on("click", controlPointsEvent);
-        $(document).on("keypress", enterKeyEvent);
-        Instructions.showMessage("Click on CONTROL points. Press ENTER when you are done.");
-    }
-}
-
-function enterKeyEvent(event){
+function enterKeyEvent(event) {
     if (event.which === 13) {
         Canvas.CANVAS.off("click");
         $(document).off("keypress");
@@ -70,6 +61,7 @@ function controlPointsEvent(event) {
 
     Canvas.paintPixel(point, colors.BLUE, false);
     controlPoints.push(point);
+    console.log(`controlPoints: ${controlPoints}`)
 }
 
 function belzierPoint(t) {
@@ -89,11 +81,10 @@ function belzierPoint(t) {
 }
 
 function draw() {
-    let t;
+    numLines = controlPoints.length / 2 + 2;
 
-
-    for (let i = 1; i <= num_lines; i++) {
-        t = (1.0 / num_lines) * i;
+    for (let i = 1; i <= numLines; i++) {
+        t = (1.0 / numLines) * i;
         finalCoordinates = belzierPoint(t);
 
         Line.draw(initialCoordinates, finalCoordinates);

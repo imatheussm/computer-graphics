@@ -1,6 +1,6 @@
 import * as Canvas from "../elements/Canvas.js";
 import * as Instructions from "../elements/Instructions.js";
-import * as Array from "../util/Array.js";
+import * as Array from "../utilities/Array.js";
 import * as colors from "../constants/Colors.js";
 import {paintPixel} from "../elements/Canvas.js";
 

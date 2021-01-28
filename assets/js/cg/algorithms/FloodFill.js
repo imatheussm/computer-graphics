@@ -40,4 +40,6 @@ function floodFill(position, paintColor, edgeColor) {
         floodFill(rightPosition, paintColor, edgeColor);
         floodFill(leftPosition, paintColor, edgeColor);
     }
+
+    Canvas.refresh();
 }

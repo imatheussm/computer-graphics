@@ -2,7 +2,7 @@ import * as Canvas from "../elements/Canvas.js";
 import * as Instructions from "../elements/Instructions.js";
 import * as colors from "../constants/Colors.js";
 import * as Line from "../algorithms/Line.js";
-import * as Util from "../util/UtilAlgorithms.js";
+import * as Util from "../utilities/UtilAlgorithms.js";
 
 let topLeftPoint, bottomRightPoint;
 
@@ -14,7 +14,7 @@ export function initialize() {
 function topLeftEvent(event) {
     topLeftPoint = Canvas.getCoordinates(event);
     if (Canvas.getColorPixel(topLeftPoint) !== colors.RED) {
-        Canvas.paintPixel(topLeftPoint, colors.DARKBLUE, true);
+        Canvas.paintPixel(topLeftPoint, colors.DARK_BLUE, true);
     }
 
     Canvas.CANVAS.off("click").on("click", bottomRightEvent);
@@ -28,7 +28,7 @@ function bottomRightEvent(event) {
     if (toRight && toBottom) {
 
         if (Canvas.getColorPixel(bottomRightPoint) !== colors.RED) {
-            Canvas.paintPixel(bottomRightPoint, colors.DARKBLUE, true);
+            Canvas.paintPixel(bottomRightPoint, colors.DARK_BLUE, true);
         }
         Canvas.CANVAS.off("click")
         draw();
@@ -58,11 +58,12 @@ function draw() {
     let right = bottomRightPoint[0] - 1;
 
 
-    let edgeLines = { "left": [[left, bottom], [left, top]],
-                      "right": [[right, top], [right, bottom]],
-                      "bottom": [[right, bottom], [left, bottom]],
-                      "top": [[left, top], [right, top]]
-                    };
+    let edgeLines = {
+        "left": [[left, bottom], [left, top]],
+        "right": [[right, top], [right, bottom]],
+        "bottom": [[right, bottom], [left, bottom]],
+        "top": [[left, top], [right, top]]
+    };
     let originalPolygonPoints = polygonPoints.slice(0, polygonPoints.length);
     let newPolygonPoints = polygonPoints.slice(0, polygonPoints.length);
     for (let key in edgeLines){
@@ -74,34 +75,37 @@ function draw() {
             let currentPoint = polygonPoints[pointIndex];
             let previousPoint = polygonPoints[(pointIndex + numPolygonPoints - 1) % numPolygonPoints];
 
-            let intersecPoint = Util.getIntersectionPoint(edgeLines[key], [previousPoint, currentPoint]);
+            let intersectionPoint = Util.getIntersectionPoint(edgeLines[key], [previousPoint, currentPoint]);
 
             if (isInsideEdge(edgeLines[key], currentPoint, key)) {
                 if (!isInsideEdge(edgeLines[key], previousPoint, key)){
-                    newPolygonPoints.push(intersecPoint);
+                    newPolygonPoints.push(intersectionPoint);
                 }
                 newPolygonPoints.push(currentPoint);
             } else if (isInsideEdge(edgeLines[key], previousPoint, key)){
-                newPolygonPoints.push(intersecPoint);
+                newPolygonPoints.push(intersectionPoint);
             }
         }
     }
 
     //erase last polygon
-    for (let i=0; i< originalPolygonPoints.length; i++){
-        Line.draw(originalPolygonPoints[i], originalPolygonPoints[(i+1) % originalPolygonPoints.length], colors.BLACK);
+    for (let i = 0; i < originalPolygonPoints.length; i++){
+        Line.draw(
+            originalPolygonPoints[i],
+            originalPolygonPoints[(i + 1) % originalPolygonPoints.length], colors.BLACK
+        );
     }
 
     //draw new polygon
-    for (let i=0; i< newPolygonPoints.length; i++){
-        Line.draw(newPolygonPoints[i], newPolygonPoints[(i+1) % newPolygonPoints.length]);
+    for (let i = 0; i < newPolygonPoints.length; i++){
+        Line.draw(newPolygonPoints[i], newPolygonPoints[(i + 1) % newPolygonPoints.length]);
     }
 
     //draw border
-    Line.draw([left-1, top-1] ,[right+1, top-1], colors.DARKBLUE);
-    Line.draw([right+1, top-1] ,[right+1, bottom+1], colors.DARKBLUE);
-    Line.draw([right+1, bottom+1] ,[left-1, bottom+1], colors.DARKBLUE);
-    Line.draw([left-1, bottom+1] ,[left-1, top-1], colors.DARKBLUE);
+    Line.draw([left-1, top-1] ,[right+1, top-1], colors.DARK_BLUE);
+    Line.draw([right+1, top-1] ,[right+1, bottom+1], colors.DARK_BLUE);
+    Line.draw([right+1, bottom+1] ,[left-1, bottom+1], colors.DARK_BLUE);
+    Line.draw([left-1, bottom+1] ,[left-1, top-1], colors.DARK_BLUE);
 }
 
 

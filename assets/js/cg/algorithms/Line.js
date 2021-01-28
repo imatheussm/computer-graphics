@@ -1,13 +1,8 @@
 import * as Canvas from "../elements/Canvas.js";
 import * as Instructions from "../elements/Instructions.js";
-import * as Array from "../util/Array.js";
+import * as Array from "../utilities/Array.js";
 import * as colors from "../constants/Colors.js";
-import * as Util from "../util/UtilAlgorithms.js";
-import {
-    HEIGHT_OFFSET, paintPixel,
-    VIRTUAL_HEIGHT,
-    VIRTUAL_WIDTH
-} from "../elements/Canvas.js";
+import * as Util from "../utilities/UtilAlgorithms.js";
 
 
 let point, x0, x1, y0, y1, deltaX, deltaY, signalX, signalY, error, twoTimesError;
@@ -63,7 +58,7 @@ function cohenSutherland(pointA, pointB){
         let intersectionPoint = Util.getIntersectionPoint(borderLine, [pointA,
                                                                           pointB])
         if (Canvas.isInPaintableArea(intersectionPoint)) {
-            paintPixel(intersectionPoint, colors.RED, true);
+            Canvas.paintPixel(intersectionPoint, colors.RED, true);
         }
         if (binCodePointA[firstBitDifference-1] === false) {
             cohenSutherland(pointA, intersectionPoint);
