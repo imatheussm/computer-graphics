@@ -1,6 +1,6 @@
 import * as Canvas from "../../elements/Canvas.js";
 import * as Instructions from "../../elements/Instructions.js";
-import * as Line from "../Line.js";
+import * as Line from "../draw/Line.js";
 
 import * as colors from "../../constants/colors.js";
 import * as cube from "../../utilities/cube.js";

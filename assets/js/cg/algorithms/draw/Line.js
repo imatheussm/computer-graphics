@@ -1,8 +1,8 @@
-import * as Canvas from "../elements/Canvas.js";
-import * as Instructions from "../elements/Instructions.js";
-import * as Array from "../utilities/array.js";
-import * as colors from "../constants/colors.js";
-import * as Util from "../utilities/miscellaneous.js";
+import * as Canvas from "../../elements/Canvas.js";
+import * as Instructions from "../../elements/Instructions.js";
+import * as Array from "../../utilities/array.js";
+import * as colors from "../../constants/colors.js";
+import * as Util from "../../utilities/miscellaneous.js";
 
 
 let point, newPoint, x0, x1, y0, y1, deltaX, deltaY, signalX, signalY, error, twoTimesError;

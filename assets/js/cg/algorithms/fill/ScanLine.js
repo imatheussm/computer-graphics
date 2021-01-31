@@ -1,8 +1,8 @@
-import * as Canvas from "../elements/Canvas.js";
-import * as Instructions from "../elements/Instructions.js";
-import * as Array from "../utilities/array.js";
-import * as colors from "../constants/colors.js";
-import {paintPixel} from "../elements/Canvas.js";
+import * as Canvas from "../../elements/Canvas.js";
+import * as Instructions from "../../elements/Instructions.js";
+import * as Array from "../../utilities/array.js";
+import * as colors from "../../constants/colors.js";
+import {paintPixel} from "../../elements/Canvas.js";
 
 let point, visitedPoints, criticalPoints, activeCriticalPoints, y_max, y_min;
 
