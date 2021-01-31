@@ -5,7 +5,7 @@ import * as colors from "../constants/colors.js";
 import * as Util from "../utilities/miscellaneous.js";
 
 
-let point, x0, x1, y0, y1, deltaX, deltaY, signalX, signalY, error, twoTimesError;
+let point, newPoint, x0, x1, y0, y1, deltaX, deltaY, signalX, signalY, error, twoTimesError;
 export let visitedPoints;
 
 export function initialize() {
@@ -20,22 +20,24 @@ export function initialize() {
 function handleClick(event) {
     if (point == null) {
         point = Canvas.getCoordinates(event);
-        if (Canvas.isInPaintableArea(point)) {
-            Canvas.paintPixel(point, colors.RED, true);
-        } else {
-            Canvas.paintPixel(point, colors.BLUE, false);
-        }
+
+
+        Canvas.paintPixel(point, colors.BLUE);
 
     } else {
-        const newPoint = Canvas.getCoordinates(event);
+        Canvas.paintPixel(point, colors.RED, true);
+        
+        newPoint = Canvas.getCoordinates(event);
+
+
         cohenSutherland(point, newPoint);
-        if (point != null){
+
+        if (point != null) {
             visitedPoints.push(point);
             point = newPoint;
-
         }
 
-
+        Canvas.paintPixel(newPoint, colors.BLUE);
     }
 }
 
@@ -45,7 +47,9 @@ function cohenSutherland(pointA, pointB){
     let or = Array.arrayOr(binCodePointA, binCodePointB);
     let and = Array.arrayAnd(binCodePointA, binCodePointB);
     let allFalse = [false, false, false, false]
-    if (Array.isArrayEqual(or, allFalse)){
+
+
+    if (Array.isArrayEqual(or, allFalse)) {
         draw(pointA, pointB);
         Canvas.refresh();
     } else if (Array.anyDifference(and, allFalse)) {
@@ -69,7 +73,7 @@ function cohenSutherland(pointA, pointB){
     }
 }
 
-function getBorderLine(diffBit){
+function getBorderLine(diffBit) {
     if (diffBit === 1) {
         return [
             [Canvas.WIDTH_OFFSET,                          Canvas.HEIGHT_OFFSET],
@@ -102,6 +106,7 @@ function getFirstBitDifference(list1, list2){
 
 function handleKeyUp(event) {
     if (event.keyCode === 13) point = null;
+    Canvas.refresh();
 }
 
 export function draw(initialCoordinates, finalCoordinates, color = colors.RED) {
