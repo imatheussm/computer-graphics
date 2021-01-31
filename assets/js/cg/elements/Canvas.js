@@ -5,37 +5,28 @@ import * as ArrayMethods from "../utilities/array.js";
 export const CANVAS  = $("#canvas");
 export const CONTEXT = CANVAS[0].getContext("2d");
 export const DPI     = window.devicePixelRatio;
-export let VIRTUAL_HEIGHT, VIRTUAL_WIDTH;
-
-let REAL_HEIGHT, REAL_WIDTH
-let PIXEL_SIZE, PIXEL_MATRIX;
+export let virtualHeight, virtualWidth;
 
 CONTEXT.translate(0.5, 0.5);
 
-export let HEIGHT_OFFSET = 4;
-export let WIDTH_OFFSET = 4;
+let realHeight, realWidth;
+let pixelSize, pixelMatrix;
 
-let VIRTUAL_PAINT_HEIGHT;
-let VIRTUAL_PAINT_WIDTH;
-
+export let heightOffset = 4, widthOffset = 4;
+let virtualPaintHeight, virtualPaintWidth;
 
 export function initialize() {
-    PIXEL_SIZE = PIXEL_SIZE || 20;
-
     initializePixelMatrix();
-
-    updateCanvasDimensions();
-    drawPixelGrid();
-    VIRTUAL_PAINT_HEIGHT = VIRTUAL_HEIGHT - 2 * HEIGHT_OFFSET;
-    VIRTUAL_PAINT_WIDTH = VIRTUAL_WIDTH - 2 * WIDTH_OFFSET;
-    drawTrimArea();
+    refresh()
 
     CANVAS.off("click").off("keypress").off("keyup");
     Instructions.showMessage("Select an algorithm to continue.");
 
 }
 
-export function refresh() {
+export function refresh(size = null) {
+    pixelSize = size || parseInt($("#density-slider").val());
+
     updateCanvasDimensions();
     drawPixelGrid();
     paintPixelGrid();
@@ -43,71 +34,74 @@ export function refresh() {
 }
 
 function initializePixelMatrix() {
-    PIXEL_MATRIX = Array(VIRTUAL_HEIGHT).fill(null).map(() => Array(VIRTUAL_WIDTH).fill(null));
+    pixelMatrix = Array(virtualHeight).fill(null).map(() => Array(virtualWidth).fill(null));
 }
 
 function updateCanvasDimensions() {
-    REAL_HEIGHT = CANVAS[0].offsetHeight * DPI;
-    REAL_WIDTH  = CANVAS[0].offsetWidth  * DPI;
+    realHeight = CANVAS[0].offsetHeight * DPI;
+    realWidth  = CANVAS[0].offsetWidth  * DPI;
 
-    VIRTUAL_HEIGHT = Math.ceil(REAL_HEIGHT / PIXEL_SIZE);
-    VIRTUAL_WIDTH  = Math.ceil(REAL_WIDTH  / PIXEL_SIZE);
+    virtualHeight = Math.ceil(realHeight / pixelSize);
+    virtualWidth  = Math.ceil(realWidth  / pixelSize);
+
+    virtualPaintHeight = virtualHeight - 2 * heightOffset;
+    virtualPaintWidth = virtualWidth - 2 * widthOffset;
 
     updatePixelMatrix();
 }
 
 function updatePixelMatrix() {
-    let [pixelMatrixHeight, pixelMatrixWidth] = [PIXEL_MATRIX.length, PIXEL_MATRIX[0].length];
+    let [pixelMatrixHeight, pixelMatrixWidth] = [pixelMatrix.length, pixelMatrix[0].length];
 
-    while (pixelMatrixHeight > VIRTUAL_HEIGHT) {
-        PIXEL_MATRIX.pop();
+    while (pixelMatrixHeight > virtualHeight) {
+        pixelMatrix.pop();
 
-        pixelMatrixHeight = PIXEL_MATRIX.length;
-    } while (pixelMatrixHeight < VIRTUAL_HEIGHT) {
-        PIXEL_MATRIX.push(Array(pixelMatrixWidth).fill(null));
+        pixelMatrixHeight = pixelMatrix.length;
+    } while (pixelMatrixHeight < virtualHeight) {
+        pixelMatrix.push(Array(pixelMatrixWidth).fill(null));
 
-        pixelMatrixHeight = PIXEL_MATRIX.length;
+        pixelMatrixHeight = pixelMatrix.length;
     }
 
-    while (pixelMatrixWidth > VIRTUAL_WIDTH) {
+    while (pixelMatrixWidth > virtualWidth) {
         for (let i = 0; i < pixelMatrixHeight; i++) {
-            PIXEL_MATRIX[i].pop();
+            pixelMatrix[i].pop();
         }
 
-        pixelMatrixWidth = PIXEL_MATRIX[0].length;
-    } while (pixelMatrixWidth < VIRTUAL_WIDTH) {
+        pixelMatrixWidth = pixelMatrix[0].length;
+    } while (pixelMatrixWidth < virtualWidth) {
         for (let i = 0; i < pixelMatrixHeight; i++) {
-            PIXEL_MATRIX[i].push(null);
+            pixelMatrix[i].push(null);
         }
 
-        pixelMatrixWidth = PIXEL_MATRIX[0].length;
+        pixelMatrixWidth = pixelMatrix[0].length;
     }
 }
 
 export function drawPixelGrid() {
-    CANVAS[0].setAttribute('height', REAL_HEIGHT.toString());
-    CANVAS[0].setAttribute('width', REAL_WIDTH.toString());
+    CANVAS[0].setAttribute('height', realHeight.toString());
+    CANVAS[0].setAttribute('width', realWidth.toString());
 
     CONTEXT.fillStyle   = colors.BLACK;
     CONTEXT.strokeStyle = "#3c3c3c";
 
-    for (let x = 0; x < REAL_WIDTH; x += PIXEL_SIZE) {
+    for (let x = 0; x < realWidth; x += pixelSize) {
         CONTEXT.moveTo(x, 0);
-        CONTEXT.lineTo(x, REAL_HEIGHT);
-    } for (let y = 0; y < REAL_HEIGHT; y += PIXEL_SIZE) {
+        CONTEXT.lineTo(x, realHeight);
+    } for (let y = 0; y < realHeight; y += pixelSize) {
         CONTEXT.moveTo(0, y);
-        CONTEXT.lineTo(REAL_WIDTH, y);
+        CONTEXT.lineTo(realWidth, y);
     }
 
-    CONTEXT.fillRect(0, 0, REAL_WIDTH, REAL_HEIGHT);
+    CONTEXT.fillRect(0, 0, realWidth, realHeight);
     CONTEXT.stroke();
 }
 
 function paintPixelGrid() {
-    for (let line = 0; line < PIXEL_MATRIX.length; line++) {
-        for (let column = 0; column < PIXEL_MATRIX[0].length; column++) {
-            if (PIXEL_MATRIX[line][column] != null) {
-                paintPixel([column, line], PIXEL_MATRIX[line][column]);
+    for (let line = 0; line < pixelMatrix.length; line++) {
+        for (let column = 0; column < pixelMatrix[0].length; column++) {
+            if (pixelMatrix[line][column] != null) {
+                paintPixel([column, line], pixelMatrix[line][column]);
             }
         }
     }
@@ -118,11 +112,11 @@ export function paintPixel(coordinates, color, isPermanent) {
     const [realX, realY] = virtualToReal(coordinates);
 
     CONTEXT.fillStyle = color;
-    CONTEXT.fillRect(realX, realY, PIXEL_SIZE, PIXEL_SIZE);
+    CONTEXT.fillRect(realX, realY, pixelSize, pixelSize);
 
     if (isPermanent === true && virtualX >= 0 && virtualY >= 0 &&
-        virtualX < PIXEL_MATRIX[0].length && virtualY < PIXEL_MATRIX.length) {
-        PIXEL_MATRIX[virtualY][virtualX] = color;
+        virtualX < pixelMatrix[0].length && virtualY < pixelMatrix.length) {
+        pixelMatrix[virtualY][virtualX] = color;
     }
 }
 
@@ -130,7 +124,7 @@ export function getPixelColor(coordinates) {
     const [virtualX, virtualY] = coordinates;
 
 
-    return PIXEL_MATRIX[virtualY, virtualX];
+    return pixelMatrix[virtualY, virtualX];
 }
 
 export function getCoordinates(event) {
@@ -140,7 +134,7 @@ export function getCoordinates(event) {
     let y = event.clientY - rectangle.top;
 
 
-    return [Math.floor(x / PIXEL_SIZE), Math.floor(y / PIXEL_SIZE)];
+    return [Math.floor(x / pixelSize), Math.floor(y / pixelSize)];
 }
 
 function componentToHex(color_value) {
@@ -153,7 +147,7 @@ function rgbToHex(red, green, blue) {
 }
 
 function virtualToReal(coordinates){
-    const [realX, realY] = coordinates.map(x => parseInt(x.toString()) * PIXEL_SIZE);
+    const [realX, realY] = coordinates.map(x => parseInt(x.toString()) * pixelSize);
 
 
     return [realX, realY];
@@ -173,10 +167,10 @@ export function getColorPixel(coordinates){
 }
 
 function drawTrimArea() {
-    for (let x = 0; x < VIRTUAL_WIDTH; x++) {
-        for (let y = 0; y < VIRTUAL_HEIGHT; y++) {
-            let inWidth = (x < WIDTH_OFFSET) || ((VIRTUAL_WIDTH - x) <= WIDTH_OFFSET)
-            let inHeight = (y < HEIGHT_OFFSET) || ((VIRTUAL_HEIGHT - y) <= HEIGHT_OFFSET)
+    for (let x = 0; x < virtualWidth; x++) {
+        for (let y = 0; y < virtualHeight; y++) {
+            let inWidth = (x < widthOffset) || ((virtualWidth - x) <= widthOffset)
+            let inHeight = (y < heightOffset) || ((virtualHeight - y) <= heightOffset)
             if (inWidth || inHeight) {
                 paintPixel([x, y], colors.DARK_BLUE);
             }
@@ -187,10 +181,10 @@ function drawTrimArea() {
 export function binCodePixel(coordinates){
     let [x, y] = coordinates;
 
-    let firstBit = y < HEIGHT_OFFSET;
-    let secondBit = y > (VIRTUAL_HEIGHT - HEIGHT_OFFSET - 1);
-    let thirdBit = x > (VIRTUAL_WIDTH - WIDTH_OFFSET - 1);
-    let fourthBit = x < WIDTH_OFFSET;
+    let firstBit = y < heightOffset;
+    let secondBit = y > (virtualHeight - heightOffset - 1);
+    let thirdBit = x > (virtualWidth - widthOffset - 1);
+    let fourthBit = x < widthOffset;
 
 
     return [firstBit, secondBit, thirdBit, fourthBit];

@@ -52,7 +52,7 @@ function getInvSlope(p_aux, point){
 }
 
 function getBoundingBox(){
-    y_min = Canvas.VIRTUAL_HEIGHT - 1;
+    y_min = Canvas.virtualHeight - 1;
     y_max = 0;
     criticalPoints = [];
     for (let i = 0; i < visitedPoints.length; i++) {

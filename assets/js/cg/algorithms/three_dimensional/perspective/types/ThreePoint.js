@@ -1,7 +1,7 @@
-import * as Isometric from "../../projection/types/Orthographic.js";
+import * as Orthographic from "../../projection/types/Orthographic.js";
 
 const FOCAL_DISTANCE = 100;
-export const ROTATION_MATRIX = math.multiply(Isometric.ROTATION_MATRIX, math.matrix([
+export const ROTATION_MATRIX = math.multiply(Orthographic.ROTATION_MATRIX, math.matrix([
     [FOCAL_DISTANCE, 0,              0,              0             ],
     [0,              FOCAL_DISTANCE, 0,              0             ],
     [0,              0,              0,              0             ],

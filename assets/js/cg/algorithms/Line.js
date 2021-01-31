@@ -76,23 +76,23 @@ function cohenSutherland(pointA, pointB){
 function getBorderLine(diffBit) {
     if (diffBit === 1) {
         return [
-            [Canvas.WIDTH_OFFSET,                          Canvas.HEIGHT_OFFSET],
-            [Canvas.VIRTUAL_WIDTH - Canvas.WIDTH_OFFSET-1, Canvas.HEIGHT_OFFSET]
+            [Canvas.widthOffset,                          Canvas.heightOffset],
+            [Canvas.virtualWidth - Canvas.widthOffset-1, Canvas.heightOffset]
         ];
     } else if (diffBit === 2) {
         return [
-            [Canvas.WIDTH_OFFSET,                            Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET - 1],
-            [Canvas.VIRTUAL_WIDTH - Canvas.WIDTH_OFFSET - 1, Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET - 1]
+            [Canvas.widthOffset,                            Canvas.virtualHeight - Canvas.heightOffset - 1],
+            [Canvas.virtualWidth - Canvas.widthOffset - 1, Canvas.virtualHeight - Canvas.heightOffset - 1]
         ];
     } else if (diffBit === 3) {
         return [
-            [Canvas.VIRTUAL_WIDTH - Canvas.WIDTH_OFFSET - 1, Canvas.HEIGHT_OFFSET                        ],
-            [Canvas.VIRTUAL_WIDTH - Canvas.WIDTH_OFFSET - 1, Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET]
+            [Canvas.virtualWidth - Canvas.widthOffset - 1, Canvas.heightOffset                        ],
+            [Canvas.virtualWidth - Canvas.widthOffset - 1, Canvas.virtualHeight - Canvas.heightOffset]
         ];
     } else if (diffBit === 4) {
         return [
-            [Canvas.WIDTH_OFFSET, Canvas.HEIGHT_OFFSET                            ],
-            [Canvas.WIDTH_OFFSET, Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET - 1]
+            [Canvas.widthOffset, Canvas.heightOffset                            ],
+            [Canvas.widthOffset, Canvas.virtualHeight - Canvas.heightOffset - 1]
         ];
     }
 }

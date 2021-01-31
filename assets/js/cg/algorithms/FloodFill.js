@@ -29,7 +29,7 @@ function floodFill(position, paintColor, edgeColor) {
     let notEdge    = (pixelColor !== edgeColor);
     let notPainted = (pixelColor !== paintColor);
     let positive   = (position[0] >= 0 && position[1] >= 0);
-    let inLimits   = (position[0] < Canvas.VIRTUAL_WIDTH && position[1] < Canvas.VIRTUAL_HEIGHT);
+    let inLimits   = (position[0] < Canvas.virtualWidth && position[1] < Canvas.virtualHeight);
 
 
     if (notEdge && notPainted && positive && inLimits) {
