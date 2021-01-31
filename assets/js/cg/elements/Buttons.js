@@ -8,7 +8,7 @@ import * as Crop from "../algorithms/Crop.js";
 import * as Translation from "../algorithms/Translation.js";
 import * as Scale from "../algorithms/Scale.js";
 import * as Rotation from "../algorithms/Rotation.js";
-import * as ThreeDimensional from "../algorithms/ThreeDimensional.js";
+import * as Projections from "../algorithms/Projection.js";
 
 
 export function initialize() {
@@ -21,7 +21,7 @@ export function initialize() {
     $("#translation-button").on("click", Translation.initialize);
     $("#scale-button").on("click", Scale.initialize);
     $("#rotation-button").on("click", Rotation.initialize);
-    $("#orthogonal-button").on("click", ThreeDimensional.initializeOrthogonal);
-    $("#perspective-button").on("click", ThreeDimensional.initializePerspective);
+    $("#projection-button").on("click", Projections.initialize);
+    // $("#perspective-button").on("click", ThreeDimensional.initializePerspective);
     $("#clear-button").on("click", Canvas.initialize);
 }

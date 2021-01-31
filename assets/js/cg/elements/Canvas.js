@@ -1,6 +1,6 @@
 import * as Instructions from "./Instructions.js";
-import * as colors from "../constants/Colors.js";
-import * as ArrayMethods from "../utilities/Array.js";
+import * as colors from "../constants/colors.js";
+import * as ArrayMethods from "../utilities/array.js";
 
 export const CANVAS  = $("#canvas");
 export const CONTEXT = CANVAS[0].getContext("2d");

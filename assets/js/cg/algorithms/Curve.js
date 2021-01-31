@@ -2,7 +2,7 @@ import * as Canvas from "../elements/Canvas.js";
 import * as Instructions from "../elements/Instructions.js";
 import * as Line from "./Line.js";
 
-import * as colors from "../constants/Colors.js";
+import * as colors from "../constants/colors.js";
 
 let initialCoordinates, finalCoordinates;
 let controlPoints, numLines;

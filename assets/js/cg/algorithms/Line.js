@@ -1,8 +1,8 @@
 import * as Canvas from "../elements/Canvas.js";
 import * as Instructions from "../elements/Instructions.js";
-import * as Array from "../utilities/Array.js";
-import * as colors from "../constants/Colors.js";
-import * as Util from "../utilities/UtilAlgorithms.js";
+import * as Array from "../utilities/array.js";
+import * as colors from "../constants/colors.js";
+import * as Util from "../utilities/miscellaneous.js";
 
 
 let point, x0, x1, y0, y1, deltaX, deltaY, signalX, signalY, error, twoTimesError;
@@ -70,28 +70,33 @@ function cohenSutherland(pointA, pointB){
 }
 
 function getBorderLine(diffBit){
-    if (diffBit === 1){
-        return [[Canvas.WIDTH_OFFSET, Canvas.HEIGHT_OFFSET],
-            [Canvas.VIRTUAL_WIDTH-Canvas.WIDTH_OFFSET-1, Canvas.HEIGHT_OFFSET]];
-    } else if (diffBit === 2){
-        return [[Canvas.WIDTH_OFFSET, Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET-1],
-        [Canvas.VIRTUAL_WIDTH-Canvas.WIDTH_OFFSET-1, Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET-1]];
-    } else if (diffBit === 3){
-        return [[Canvas.VIRTUAL_WIDTH - Canvas.WIDTH_OFFSET-1, Canvas.HEIGHT_OFFSET],
-        [Canvas.VIRTUAL_WIDTH - Canvas.WIDTH_OFFSET-1, Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET]];
-    } else if (diffBit === 4){
-        return [[Canvas.WIDTH_OFFSET, Canvas.HEIGHT_OFFSET],
-            [Canvas.WIDTH_OFFSET, Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET-1]];
+    if (diffBit === 1) {
+        return [
+            [Canvas.WIDTH_OFFSET,                          Canvas.HEIGHT_OFFSET],
+            [Canvas.VIRTUAL_WIDTH - Canvas.WIDTH_OFFSET-1, Canvas.HEIGHT_OFFSET]
+        ];
+    } else if (diffBit === 2) {
+        return [
+            [Canvas.WIDTH_OFFSET,                            Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET - 1],
+            [Canvas.VIRTUAL_WIDTH - Canvas.WIDTH_OFFSET - 1, Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET - 1]
+        ];
+    } else if (diffBit === 3) {
+        return [
+            [Canvas.VIRTUAL_WIDTH - Canvas.WIDTH_OFFSET - 1, Canvas.HEIGHT_OFFSET                        ],
+            [Canvas.VIRTUAL_WIDTH - Canvas.WIDTH_OFFSET - 1, Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET]
+        ];
+    } else if (diffBit === 4) {
+        return [
+            [Canvas.WIDTH_OFFSET, Canvas.HEIGHT_OFFSET                            ],
+            [Canvas.WIDTH_OFFSET, Canvas.VIRTUAL_HEIGHT - Canvas.HEIGHT_OFFSET - 1]
+        ];
     }
 }
 
 
 function getFirstBitDifference(list1, list2){
-    for (let i=0; i<list1.length; i++) {
-        if (list1[i] || list2[i]) {
-            return i + 1;
-        }
-    }
+    for (let i = 0; i < list1.length; i++) if (list1[i] || list2[i]) return i + 1;
+
     return false;
 }
 

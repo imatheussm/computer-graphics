@@ -1,8 +1,8 @@
 import * as Canvas from "../elements/Canvas.js";
 import * as Instructions from "../elements/Instructions.js";
-import * as colors from "../constants/Colors.js";
+import * as colors from "../constants/colors.js";
 import * as Line from "../algorithms/Line.js";
-import * as Util from "../utilities/UtilAlgorithms.js";
+import * as Util from "../utilities/miscellaneous.js";
 
 let topLeftPoint, bottomRightPoint;
 
