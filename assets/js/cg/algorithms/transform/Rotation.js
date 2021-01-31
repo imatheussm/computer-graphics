@@ -1,7 +1,6 @@
 import * as Canvas from "../../elements/Canvas.js";
 import * as Instructions from "../../elements/Instructions.js";
 import * as colors from "../../constants/colors.js";
-import {paintPixel} from "../../elements/Canvas.js";
 import * as Line from "../draw/Line.js";
 
 let point, countDigit, rotationDegrees, matrix, newPoints;
@@ -16,7 +15,9 @@ function borderEvent(event) {
     point = Canvas.getCoordinates(event);
     countDigit = 0;
     newPoints = [];
-    paintPixel(point, colors.BLUE, false);
+
+
+    Canvas.paintPixel(point, colors.BLUE, false);
     Instructions.showMessage("Type three numbers to indicate the rotation degree");
     Canvas.CANVAS.off("click");
     $(document).on("keypress", getRotationDegreesEvent);
@@ -60,25 +61,25 @@ function runRotation() {
     draw();
 }
 
-function draw(){
+function draw() {
     let scaledCoordinates = [];
 
-    for (let i=0; i < newPoints.length; i++){
+    for (let i=0; i < newPoints.length; i++) {
         let point = newPoints[i];
         scaledCoordinates.push(matrixMult(point, matrix));
     }
 
-    for (let i = 0; i <Line.visitedPoints.length; i++){
+    for (let i = 0; i <Line.visitedPoints.length; i++) {
         let previousPoint = Line.visitedPoints[i];
-        let nextPoint = Line.visitedPoints[(i+1) % Line.visitedPoints.length];
+        let nextPoint = Line.visitedPoints[(i + 1) % Line.visitedPoints.length];
         Line.draw(previousPoint, nextPoint, colors.BLACK);
     }
 
-    for (let i = 0; i < scaledCoordinates.length; i++){
+    for (let i = 0; i < scaledCoordinates.length; i++) {
         let previousPoint = scaledCoordinates[i];
         previousPoint[0] = Math.round(previousPoint[0]);
         previousPoint[1] = Math.round(previousPoint[1]);
-        let nextPoint = scaledCoordinates[(i+1) % scaledCoordinates.length];
+        let nextPoint = scaledCoordinates[(i + 1) % scaledCoordinates.length];
         nextPoint[0] = Math.round(nextPoint[0]);
         nextPoint[1] = Math.round(nextPoint[1]);
         Line.draw(previousPoint, nextPoint);

@@ -38,9 +38,9 @@ function bottomRightEvent(event) {
 }
 
 function isInsideEdge(edgeLine, point, mode){
-    if (mode === "left"){
+    if (mode === "left") {
         return point[0] >= edgeLine[0][0];
-    } else if (mode === "right"){
+    } else if (mode === "right") {
         return point[0] <= edgeLine[0][0];
     } else if (mode === "bottom") {
         return point[1] <= edgeLine[0][1];
@@ -66,30 +66,30 @@ function draw() {
     };
     let originalPolygonPoints = polygonPoints.slice(0, polygonPoints.length);
     let newPolygonPoints = polygonPoints.slice(0, polygonPoints.length);
-    for (let key in edgeLines){
+    for (let key in edgeLines) {
         polygonPoints = newPolygonPoints.slice(0, newPolygonPoints.length);
         newPolygonPoints = [];
 
         let numPolygonPoints = polygonPoints.length;
-        for (let pointIndex=0; pointIndex < numPolygonPoints; pointIndex++){
+        for (let pointIndex = 0; pointIndex < numPolygonPoints; pointIndex++) {
             let currentPoint = polygonPoints[pointIndex];
             let previousPoint = polygonPoints[(pointIndex + numPolygonPoints - 1) % numPolygonPoints];
 
             let intersectionPoint = Util.getIntersectionPoint(edgeLines[key], [previousPoint, currentPoint]);
 
             if (isInsideEdge(edgeLines[key], currentPoint, key)) {
-                if (!isInsideEdge(edgeLines[key], previousPoint, key)){
+                if (!isInsideEdge(edgeLines[key], previousPoint, key)) {
                     newPolygonPoints.push(intersectionPoint);
                 }
                 newPolygonPoints.push(currentPoint);
-            } else if (isInsideEdge(edgeLines[key], previousPoint, key)){
+            } else if (isInsideEdge(edgeLines[key], previousPoint, key)) {
                 newPolygonPoints.push(intersectionPoint);
             }
         }
     }
 
     //erase last polygon
-    for (let i = 0; i < originalPolygonPoints.length; i++){
+    for (let i = 0; i < originalPolygonPoints.length; i++) {
         Line.draw(
             originalPolygonPoints[i],
             originalPolygonPoints[(i + 1) % originalPolygonPoints.length], colors.BLACK
@@ -97,15 +97,15 @@ function draw() {
     }
 
     //draw new polygon
-    for (let i = 0; i < newPolygonPoints.length; i++){
+    for (let i = 0; i < newPolygonPoints.length; i++) {
         Line.draw(newPolygonPoints[i], newPolygonPoints[(i + 1) % newPolygonPoints.length]);
     }
 
     //draw border
-    Line.draw([left-1, top-1] ,[right+1, top-1], colors.DARK_BLUE);
-    Line.draw([right+1, top-1] ,[right+1, bottom+1], colors.DARK_BLUE);
-    Line.draw([right+1, bottom+1] ,[left-1, bottom+1], colors.DARK_BLUE);
-    Line.draw([left-1, bottom+1] ,[left-1, top-1], colors.DARK_BLUE);
+    Line.draw([left - 1, top - 1], [right + 1, top - 1], colors.DARK_BLUE);
+    Line.draw([right + 1, top - 1], [right + 1, bottom + 1], colors.DARK_BLUE);
+    Line.draw([right + 1, bottom + 1], [left - 1, bottom + 1], colors.DARK_BLUE);
+    Line.draw([left - 1, bottom + 1], [left - 1, top - 1], colors.DARK_BLUE);
 }
 
 

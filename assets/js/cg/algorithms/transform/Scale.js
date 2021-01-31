@@ -72,11 +72,9 @@ function runScale() {
     let x0 = fixed_point[0];
     let y0 = fixed_point[1];
 
-    let scale_x = xScale * xScaleSign;
-    console.log('yscaleSign',yScaleSign);
-    console.log('xscaleSign',xScaleSign);
-    let scale_y = yScale * yScaleSign;
-    matrix = [[scale_x, 0], [0, scale_y]];
+    let scaleX = xScale * xScaleSign;
+    let scaleY = yScale * yScaleSign;
+    matrix = [[scaleX, 0], [0, scaleY]];
 
     for(let i = 0; i < Line.visitedPoints.length; i++){
         let newPoint = [0, 0];
@@ -90,22 +88,22 @@ function runScale() {
     draw();
 }
 
-function draw(){
+function draw() {
     let scaledCoordinates = [];
-    for (let i=0; i < newPoints.length; i++){
+    for (let i=0; i < newPoints.length; i++) {
         let point = newPoints[i];
         scaledCoordinates.push(matrixMult(point, matrix));
     }
 
     //erase previous points
-    for (let i=0; i <Line.visitedPoints.length; i++){
+    for (let i=0; i <Line.visitedPoints.length; i++) {
         let previousPoint = Line.visitedPoints[i];
         let nextPoint = Line.visitedPoints[(i+1) % Line.visitedPoints.length];
         Line.draw(previousPoint, nextPoint, colors.BLACK);
     }
 
 
-    for (let i=0; i < scaledCoordinates.length; i++){
+    for (let i=0; i < scaledCoordinates.length; i++) {
         let previousPoint = scaledCoordinates[i];
         console.log(previousPoint);
         let nextPoint = scaledCoordinates[(i+1) % scaledCoordinates.length];
@@ -117,8 +115,8 @@ function matrixMult(point, matrix) {
     let result = [0,0];
     let fixedPoint = Line.visitedPoints[0];
 
-    for (let i=0; i<2; i++){
-        for (let j=0;j<2; j++){
+    for (let i=0; i<2; i++) {
+        for (let j=0;j<2; j++) {
             result[i] += matrix[i][j] * point[j];
         }
         result[i] += fixedPoint[i];
