@@ -26,7 +26,7 @@ function handleClick(event) {
 
     } else {
         Canvas.paintPixel(point, colors.RED, true);
-        
+
         newPoint = Canvas.getCoordinates(event);
 
 
