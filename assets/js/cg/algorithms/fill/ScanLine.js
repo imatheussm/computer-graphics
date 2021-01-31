@@ -2,7 +2,6 @@ import * as Canvas from "../../elements/Canvas.js";
 import * as Instructions from "../../elements/Instructions.js";
 import * as Array from "../../utilities/array.js";
 import * as colors from "../../constants/colors.js";
-import {paintPixel} from "../../elements/Canvas.js";
 
 let point, visitedPoints, criticalPoints, activeCriticalPoints, y_max, y_min;
 
@@ -21,7 +20,6 @@ function borderEvent(event) {
     getBoundingBox();
     scanLine();
 }
-
 
 function getPolygonPoints(point, edgeColor) {
     let pixelColor = Canvas.getColorPixel(point);
@@ -116,7 +114,7 @@ function scanLine(){
             activeCriticalPoints[i] = point;
         }
 
-        //Add lines with critial points for the given y
+        //Add lines with critical points for the given y
         for (let i=0; i < criticalPoints.length; i++){
             let point = criticalPoints[i];
             if (visitedPoints[point.index][1] === y){
@@ -142,7 +140,7 @@ function scanLine(){
             let x_start  = Math.round(activeCriticalPoints[i].x_intersection);
             let x_end = Math.round(activeCriticalPoints[i+1].x_intersection);
             for (let x = x_start; x <= x_end; x++){
-                paintPixel([x,y], colors.GREEN);
+                Canvas.paintPixel([x, y], colors.GREEN);
             }
         }
 

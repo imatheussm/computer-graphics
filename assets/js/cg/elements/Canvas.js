@@ -37,6 +37,10 @@ function initializePixelMatrix() {
     pixelMatrix = Array(virtualHeight).fill(null).map(() => Array(virtualWidth).fill(null));
 }
 
+export function isPainted(coordinates, color) {
+    return pixelMatrix[coordinates[1]][coordinates[0]] === color;
+}
+
 function updateCanvasDimensions() {
     realHeight = CANVAS[0].offsetHeight * DPI;
     realWidth  = CANVAS[0].offsetWidth  * DPI;

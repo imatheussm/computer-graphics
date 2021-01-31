@@ -67,7 +67,6 @@ function yScaleMagnitudeEvent(event) {
 
 
 function runScale() {
-
     let fixed_point = Line.visitedPoints[0];
     let x0 = fixed_point[0];
     let y0 = fixed_point[1];
@@ -76,7 +75,7 @@ function runScale() {
     let scaleY = yScale * yScaleSign;
     matrix = [[scaleX, 0], [0, scaleY]];
 
-    for(let i = 0; i < Line.visitedPoints.length; i++){
+    for (let i = 0; i < Line.visitedPoints.length; i++) {
         let newPoint = [0, 0];
         newPoint[0] = Line.visitedPoints[i][0];
         newPoint[1] = Line.visitedPoints[i][1];

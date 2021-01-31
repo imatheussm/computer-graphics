@@ -50,7 +50,7 @@ function runRotation() {
     matrix = [[Math.cos(rotationDegrees), -Math.sin(rotationDegrees)],
               [Math.sin(rotationDegrees), Math.cos(rotationDegrees)]];
 
-    for(let i = 0; i< Line.visitedPoints.length; i++){
+    for (let i = 0; i< Line.visitedPoints.length; i++) {
         let newPoint = [0, 0];
         newPoint[0] = Line.visitedPoints[i][0];
         newPoint[1] = Line.visitedPoints[i][1];
