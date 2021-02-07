@@ -16,7 +16,6 @@ function borderEvent(event) {
     countDigit = 0;
     newPoints = [];
 
-
     Canvas.paintPixel(point, colors.BLUE, false);
     Instructions.showMessage("Type three numbers to indicate the rotation degree");
     Canvas.CANVAS.off("click");
@@ -39,13 +38,13 @@ function getRotationDegreesEvent(event){
             runRotation();
         }
         countDigit += 1;
-
     }
 }
 
 function runRotation() {
     let fixed_point = Line.visitedPoints[0];
-    let [x0, y0] = fixed_point[0];
+    let x0 = fixed_point[0];
+    let y0 = fixed_point[1];
 
     matrix = [[Math.cos(rotationDegrees), -Math.sin(rotationDegrees)],
               [Math.sin(rotationDegrees), Math.cos(rotationDegrees)]];
