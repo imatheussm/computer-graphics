@@ -76,22 +76,22 @@ function cohenSutherland(pointA, pointB){
 function getBorderLine(diffBit) {
     if (diffBit === 1) {
         return [
-            [Canvas.widthOffset,                          Canvas.heightOffset],
+            [Canvas.widthOffset,                         Canvas.heightOffset],
             [Canvas.virtualWidth - Canvas.widthOffset-1, Canvas.heightOffset]
         ];
     } else if (diffBit === 2) {
         return [
-            [Canvas.widthOffset,                            Canvas.virtualHeight - Canvas.heightOffset - 1],
+            [Canvas.widthOffset,                           Canvas.virtualHeight - Canvas.heightOffset - 1],
             [Canvas.virtualWidth - Canvas.widthOffset - 1, Canvas.virtualHeight - Canvas.heightOffset - 1]
         ];
     } else if (diffBit === 3) {
         return [
-            [Canvas.virtualWidth - Canvas.widthOffset - 1, Canvas.heightOffset                        ],
+            [Canvas.virtualWidth - Canvas.widthOffset - 1, Canvas.heightOffset                       ],
             [Canvas.virtualWidth - Canvas.widthOffset - 1, Canvas.virtualHeight - Canvas.heightOffset]
         ];
     } else if (diffBit === 4) {
         return [
-            [Canvas.widthOffset, Canvas.heightOffset                            ],
+            [Canvas.widthOffset, Canvas.heightOffset                           ],
             [Canvas.widthOffset, Canvas.virtualHeight - Canvas.heightOffset - 1]
         ];
     }
@@ -109,7 +109,15 @@ function handleKeyUp(event) {
     Canvas.refresh();
 }
 
-export function draw(initialCoordinates, finalCoordinates, color = colors.RED) {
+export function draw(initialCoordinates, finalCoordinates, color = colors.RED, isPermanent = true) {
+    return draw_or_erase(true, initialCoordinates, finalCoordinates, color, isPermanent);
+}
+
+export function erase(initialCoordinates, finalCoordinates) {
+    return draw_or_erase(false, initialCoordinates, finalCoordinates, null, null);
+}
+
+function draw_or_erase(shouldDraw, initialCoordinates, finalCoordinates, color, isPermanent) {
     [x0, y0] = initialCoordinates.map(c => parseInt(c));
     [x1, y1] = finalCoordinates.map(c => parseInt(c));
 
@@ -119,7 +127,7 @@ export function draw(initialCoordinates, finalCoordinates, color = colors.RED) {
     error = deltaX - deltaY;
 
 
-    while(true) {
+    while (true) {
         if ((x0 === x1) && (y0 === y1)) break;
 
         twoTimesError = 2 * error;
@@ -127,6 +135,14 @@ export function draw(initialCoordinates, finalCoordinates, color = colors.RED) {
         if (twoTimesError > -deltaY) { error -= deltaY; x0 += signalX; }
         if (twoTimesError <  deltaX) { error += deltaX; y0 += signalY; }
 
-        Canvas.paintPixel([x0, y0], color, true);
+        if (shouldDraw === true) Canvas.paintPixel([x0, y0], color, isPermanent);
+        else Canvas.erasePixel([x0, y0]);
     }
+}
+
+export function transformVisitedPoints(newVisitedPoints) {
+    if (newVisitedPoints.length !== visitedPoints.length || newVisitedPoints[0].length !== visitedPoints[0].length)
+        throw Error("Lengths must match.");
+
+    visitedPoints = newVisitedPoints;
 }

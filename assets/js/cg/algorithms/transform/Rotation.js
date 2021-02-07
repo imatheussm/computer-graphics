@@ -2,6 +2,7 @@ import * as Canvas from "../../elements/Canvas.js";
 import * as Instructions from "../../elements/Instructions.js";
 import * as colors from "../../constants/colors.js";
 import * as Line from "../draw/Line.js";
+import {transformVisitedPoints} from "../draw/Line.js";
 
 let point, countDigit, rotationDegrees, matrix, newPoints;
 
@@ -22,57 +23,55 @@ function borderEvent(event) {
     $(document).on("keypress", getRotationDegreesEvent);
 }
 
-function getRotationDegreesEvent(event){
-    if (event.which >= 48 && event.which <= 57){
+function getRotationDegreesEvent(event) {
+    if (event.which >= 48 && event.which <= 57) {
         let digit = event.which - 48;
+
         if (countDigit === 0) {
             rotationDegrees = 100 * digit;
         } else if (countDigit === 1) {
             rotationDegrees += 10*digit;
-        } else{
+        } else {
             rotationDegrees += digit;
-            rotationDegrees = 0.0174533*rotationDegrees;
+            rotationDegrees = 0.0174533 * rotationDegrees;
             $(document).off("keypress");
             Instructions.showMessage("Click in a point of the object to fix it.");
             Canvas.CANVAS.off("click").on("click", borderEvent);
             runRotation();
         }
+
         countDigit += 1;
     }
 }
 
 function runRotation() {
-    let fixed_point = Line.visitedPoints[0];
-    let x0 = fixed_point[0];
-    let y0 = fixed_point[1];
+    let [x0, y0] = Line.visitedPoints[0];
 
     matrix = [[Math.cos(rotationDegrees), -Math.sin(rotationDegrees)],
               [Math.sin(rotationDegrees), Math.cos(rotationDegrees)]];
 
-    for (let i = 0; i< Line.visitedPoints.length; i++) {
-        let newPoint = [0, 0];
-        newPoint[0] = Line.visitedPoints[i][0];
-        newPoint[1] = Line.visitedPoints[i][1];
-        newPoint[0] -= x0;
-        newPoint[1] -= y0;
-        newPoints.push(newPoint);
-    }
+    for (let i = 0; i < Line.visitedPoints.length; i++)
+        newPoints.push([Line.visitedPoints[i][0] - x0, Line.visitedPoints[i][1] - y0]);
+
     draw();
 }
 
 function draw() {
     let scaledCoordinates = [];
 
-    for (let i=0; i < newPoints.length; i++) {
+    for (let i = 0; i < newPoints.length; i++) {
         let point = newPoints[i];
+
         scaledCoordinates.push(matrixMult(point, matrix));
     }
 
     for (let i = 0; i <Line.visitedPoints.length; i++) {
         let previousPoint = Line.visitedPoints[i];
         let nextPoint = Line.visitedPoints[(i + 1) % Line.visitedPoints.length];
-        Line.draw(previousPoint, nextPoint, colors.BLACK);
+        Line.erase(previousPoint, nextPoint);
     }
+
+    transformVisitedPoints(scaledCoordinates);
 
     for (let i = 0; i < scaledCoordinates.length; i++) {
         let previousPoint = scaledCoordinates[i];
@@ -89,8 +88,8 @@ function matrixMult(point, matrix) {
     let result = [0,0];
     let fixedPoint = Line.visitedPoints[0];
 
-    for (let i=0; i<2; i++){
-        for (let j=0;j<2; j++){
+    for (let i = 0; i<2; i++) {
+        for (let j = 0; j<2; j++) {
             result[i] += matrix[i][j] * point[j];
         }
         result[i] += fixedPoint[i];

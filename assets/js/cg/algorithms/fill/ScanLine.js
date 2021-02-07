@@ -1,13 +1,11 @@
 import * as Canvas from "../../elements/Canvas.js";
 import * as Instructions from "../../elements/Instructions.js";
-import * as Array from "../../utilities/array.js";
 import * as colors from "../../constants/colors.js";
 import * as Line from "../draw/Line.js";
 
-let point, visitedPoints, criticalPoints, activeCriticalPoints, y_max, y_min;
+let point, visitedPoints, criticalPoints, activeCriticalPoints, yMax, yMin;
 
 export function initialize() {
-
     $(document).off("keypress");
     Canvas.CANVAS.off("click").on("click", borderEvent);
     Instructions.showMessage("Choose a POINT of the BORDER of the object to fill.");
@@ -22,54 +20,54 @@ function borderEvent(event) {
 }
 
 
-function getInvSlope(p_aux, point){
-    return (1.0*p_aux[0] - point[0]) / (1.0*p_aux[1] - point[1]);
+function getInvSlope(pAux, point) {
+    return (1.0 * pAux[0] - point[0]) / (1.0 * pAux[1] - point[1]);
 }
 
-function getBoundingBox(){
-    y_min = Canvas.virtualHeight;
-    y_max = 0;
+function getBoundingBox() {
+    yMin = Canvas.virtualHeight;
+    yMax = 0;
     criticalPoints = [];
     for (let i = 0; i < visitedPoints.length; i++) {
         let point = visitedPoints[i];
         let y = point[1], x = point[0];
-        if (y < y_min) {
-            y_min = y;
-        } else if (y > y_max) {
-            y_max = y;
+        if (y < yMin) {
+            yMin = y;
+        } else if (y > yMax) {
+            yMax = y;
         }
-        let p_aux = visitedPoints[(i + 1) % visitedPoints.length];
-        if (y < p_aux[1]) {
+        let pAux = visitedPoints[(i + 1) % visitedPoints.length];
+        if (y < pAux[1]) {
             criticalPoints.push({
                 "index": i,
                 "dir": 1,
                 "x_intersection": x,
-                "inv_slope": getInvSlope(p_aux, point)
+                "inv_slope": getInvSlope(pAux, point)
             })
         }
-        p_aux = visitedPoints[(i - 1 + visitedPoints.length) % visitedPoints.length];
-        if (y < p_aux[1]) {
+        pAux = visitedPoints[(i - 1 + visitedPoints.length) % visitedPoints.length];
+        if (y < pAux[1]) {
             criticalPoints.push({
                 "index": i,
                 "dir": -1,
                 "x_intersection": x,
-                "inv_slope": getInvSlope(p_aux, point)
+                "inv_slope": getInvSlope(pAux, point)
             })
         }
 
     }
 }
 
-function bubbleSortPoint(inputArr){
+function bubbleSortPoint(inputArr) {
     let len = inputArr.length;
 
     let swapped;
     do {
         swapped = false;
         for (let i = 0; i < len - 1; i++) {
-            let value_i = inputArr[i].x_intersection;
-            let value_i_plus = inputArr[i+1].x_intersection;
-            if (value_i > value_i_plus) {
+            let valueI = inputArr[i].x_intersection;
+            let valueIPlus = inputArr[i+1].x_intersection;
+            if (valueI > valueIPlus) {
                 let tmp = inputArr[i];
                 inputArr[i] = inputArr[i + 1];
                 inputArr[i + 1] = tmp;
@@ -80,31 +78,31 @@ function bubbleSortPoint(inputArr){
     return inputArr;
 }
 
-function scanLine(){
+function scanLine() {
     activeCriticalPoints = [];
-    for (let y = y_min; y <= y_max; y++){
+    for (let y = yMin; y <= yMax; y++) {
 
         //update x_intersection on activePoints
-        for (let i = 0; i < activeCriticalPoints.length; i++){
+        for (let i = 0; i < activeCriticalPoints.length; i++) {
             let point = activeCriticalPoints[i];
             point.x_intersection += point.inv_slope;
             activeCriticalPoints[i] = point;
         }
 
         //Add lines with critical points for the given y
-        for (let i=0; i < criticalPoints.length; i++){
+        for (let i = 0; i < criticalPoints.length; i++) {
             let point = criticalPoints[i];
-            if (visitedPoints[point.index][1] === y){
+            if (visitedPoints[point.index][1] === y) {
                 activeCriticalPoints.push(point);
             }
         }
 
         //Remove points with y equal to y_max
-        for (let i = activeCriticalPoints.length - 1; i >= 0; i--){
+        for (let i = activeCriticalPoints.length - 1; i >= 0; i--) {
             let point = activeCriticalPoints[i];
             let index = (point.index + point.dir + visitedPoints.length) % visitedPoints.length;
-            let p_max = visitedPoints[index];
-            if (p_max[1] === y){
+            let pMax = visitedPoints[index];
+            if (pMax[1] === y) {
                 activeCriticalPoints.splice(i, 1);
             }
         }
@@ -113,13 +111,13 @@ function scanLine(){
         bubbleSortPoint(activeCriticalPoints);
 
         //Paint between each pair of active points
-        for (let i=0; i < activeCriticalPoints.length; i += 2){
-            let x_start  = Math.round(activeCriticalPoints[i].x_intersection);
-            let x_end = Math.round(activeCriticalPoints[i+1].x_intersection);
-            for (let x = x_start; x < x_end; x++){
-                let pixel_color = Canvas.getColorPixel([x, y]);
-                if (pixel_color !== colors.RED) {
-                    Canvas.paintPixel([x, y], colors.GREEN);
+        for (let i = 0; i < activeCriticalPoints.length; i += 2) {
+            let xStart = Math.round(activeCriticalPoints[i].x_intersection);
+            let xEnd = Math.round(activeCriticalPoints[i+1].x_intersection);
+            for (let x = xStart; x < xEnd; x++) {
+                let pixelColor = Canvas.getColorPixel([x, y]);
+                if (pixelColor !== colors.RED) {
+                    Canvas.paintPixel([x, y], colors.GREEN, true);
                 }
             }
         }

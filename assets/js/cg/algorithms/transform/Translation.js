@@ -2,11 +2,13 @@ import * as Canvas from "../../elements/Canvas.js";
 import * as Instructions from "../../elements/Instructions.js";
 import * as Array from "../../utilities/array.js";
 import * as colors from "../../constants/colors.js";
-import {paintPixel} from "../../elements/Canvas.js";
 
-let point, visitedPoints;
+let point, currentPoint, visitedPoints, queue, pixelColor, adjacency, isEdge, notVisited;
 
 export function initialize() {
+    visitedPoints = [];
+    queue = [];
+
     $(document).off("keypress");
     Canvas.CANVAS.off("click").on("click", borderEvent);
     Instructions.showMessage("Click on the point of an object.");
@@ -15,10 +17,8 @@ export function initialize() {
 function borderEvent(event) {
     point = Canvas.getCoordinates(event);
 
-    visitedPoints = [];
     getPolygonPoints(point, colors.RED);
-    console.log(visitedPoints);
-    paintPixel(point, colors.BLUE, false);
+    Canvas.paintPixel(point, colors.BLUE, false);
     Instructions.showMessage("Click on a new point to translate the object.");
     Canvas.CANVAS.off("click").on("click", newPointEvent);
 }
@@ -27,58 +27,66 @@ function borderEvent(event) {
 function newPointEvent(event) {
     point = Canvas.getCoordinates(event);
 
-    let x0 = visitedPoints[0][0];
-    let y0 = visitedPoints[0][1];
-    let x1 = point[0];
-    let y1 = point[1];
-    let diff_x = x1 - x0;
-    let diff_y = y1 - y0;
-    let newPoints = arrayScalarSum(visitedPoints, diff_x, 0)
-    newPoints = arrayScalarSum(newPoints, diff_y, 1)
+    let [x0, y0] = visitedPoints[0];
+    let [x1, y1] = point;
+    let [diffX, diffY] = [(x1 - x0), (y1 - y0)];
+
+    let newPoints = arrayScalarSum(visitedPoints, diffX, 0);
+    newPoints = arrayScalarSum(newPoints, diffY, 1);
 
     //erase previous points
-    for (let i=0; i <visitedPoints.length; i++){
-        paintPixel(visitedPoints[i], colors.BLACK, true);
+    for (let i = 0; i < visitedPoints.length; i++) {
+        Canvas.erasePixel(visitedPoints[i]);
     }
 
     // paint new points
-    for (let i=0; i <newPoints.length; i++){
-        paintPixel(newPoints[i], colors.RED, true);
+    for (let i = 0; i <newPoints.length; i++) {
+        Canvas.paintPixel(newPoints[i], colors.RED, true);
     }
-    Instructions.showMessage("Click on the point of an object.");
-    Canvas.CANVAS.off("click").on("click", borderEvent);
+
+    Canvas.refresh();
+    initialize();
 }
 
-function arrayScalarSum(array, scalar, index){
+function arrayScalarSum(array, scalar, index) {
     let result = [];
-    for (let i=0; i < array.length; i++){
+
+    for (let i = 0; i < array.length; i++) {
         let new_point = [array[i][0], array[i][1]];
         new_point[index] += scalar;
+
         result.push(new_point);
     }
     return result;
 }
 
 function getPolygonPoints(point, edgeColor) {
-    let pixelColor = Canvas.getColorPixel(point);
+    queue.push(point);
 
-    let adjacency = [
-        [point[0] + 1, point[1] + 1],
-        [point[0] + 1, point[1] + 0],
-        [point[0] + 1, point[1] - 1],
-        [point[0] + 0, point[1] + 1],
-        [point[0] + 0, point[1] + 0],
-        [point[0] + 0, point[1] - 1],
-        [point[0] - 1, point[1] + 1],
-        [point[0] - 1, point[1] + 0],
-        [point[0] - 1, point[1] - 1],
-    ]
+    while (queue.length > 0) {
+        currentPoint = queue.shift();
 
-    let isEdge = pixelColor === edgeColor;
-    let notVisited = Array.includesArray(visitedPoints, point) === false;
+        pixelColor = Canvas.getColorPixel(currentPoint);
 
-    if (notVisited && isEdge) {
-        visitedPoints.push(point);
-        for (let p = 0; p < adjacency.length; p++) getPolygonPoints(adjacency[p], edgeColor);
+        adjacency = [
+            [currentPoint[0] + 1, currentPoint[1] + 1],
+            [currentPoint[0] + 1, currentPoint[1] + 0],
+            [currentPoint[0] + 1, currentPoint[1] - 1],
+            [currentPoint[0] + 0, currentPoint[1] + 1],
+            [currentPoint[0] + 0, currentPoint[1] + 0],
+            [currentPoint[0] + 0, currentPoint[1] - 1],
+            [currentPoint[0] - 1, currentPoint[1] + 1],
+            [currentPoint[0] - 1, currentPoint[1] + 0],
+            [currentPoint[0] - 1, currentPoint[1] - 1],
+        ]
+
+        isEdge = pixelColor === edgeColor;
+        notVisited = Array.includesArray(visitedPoints, currentPoint) === false;
+
+        if (notVisited && isEdge) {
+            visitedPoints.push(currentPoint);
+
+            for (let i = 0; i < adjacency.length; i++) queue.push(adjacency[i]);
+        }
     }
 }

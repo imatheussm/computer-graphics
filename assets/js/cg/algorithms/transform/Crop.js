@@ -14,7 +14,7 @@ export function initialize() {
 function topLeftEvent(event) {
     topLeftPoint = Canvas.getCoordinates(event);
     if (Canvas.getColorPixel(topLeftPoint) !== colors.RED) {
-        Canvas.paintPixel(topLeftPoint, colors.DARK_BLUE, true);
+        Canvas.paintPixel(topLeftPoint, colors.DARK_BLUE, false);
     }
 
     Canvas.CANVAS.off("click").on("click", bottomRightEvent);
@@ -28,7 +28,7 @@ function bottomRightEvent(event) {
     if (toRight && toBottom) {
 
         if (Canvas.getColorPixel(bottomRightPoint) !== colors.RED) {
-            Canvas.paintPixel(bottomRightPoint, colors.DARK_BLUE, true);
+            Canvas.paintPixel(bottomRightPoint, colors.DARK_BLUE, false);
         }
         Canvas.CANVAS.off("click")
         draw();
@@ -90,9 +90,9 @@ function draw() {
 
     //erase last polygon
     for (let i = 0; i < originalPolygonPoints.length; i++) {
-        Line.draw(
+        Line.erase(
             originalPolygonPoints[i],
-            originalPolygonPoints[(i + 1) % originalPolygonPoints.length], colors.BLACK
+            originalPolygonPoints[(i + 1) % originalPolygonPoints.length]
         );
     }
 
@@ -102,10 +102,10 @@ function draw() {
     }
 
     //draw border
-    Line.draw([left - 1, top - 1], [right + 1, top - 1], colors.DARK_BLUE);
-    Line.draw([right + 1, top - 1], [right + 1, bottom + 1], colors.DARK_BLUE);
-    Line.draw([right + 1, bottom + 1], [left - 1, bottom + 1], colors.DARK_BLUE);
-    Line.draw([left - 1, bottom + 1], [left - 1, top - 1], colors.DARK_BLUE);
+    Line.draw([left - 1, top - 1], [right + 1, top - 1], colors.DARK_BLUE, false);
+    Line.draw([right + 1, top - 1], [right + 1, bottom + 1], colors.DARK_BLUE, false);
+    Line.draw([right + 1, bottom + 1], [left - 1, bottom + 1], colors.DARK_BLUE, false);
+    Line.draw([left - 1, bottom + 1], [left - 1, top - 1], colors.DARK_BLUE, false);
 }
 
 

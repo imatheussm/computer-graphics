@@ -13,16 +13,16 @@ import * as Perspective from "../algorithms/project/perspective/Perspective.js";
 
 
 export function initialize() {
-    $("#circle-button").on("click", Circle.initialize);
-    $("#flood-fill-button").on("click", FloodFill.initialize);
-    $("#curve-button").on("click", Curve.initialize);
-    $("#multi-line-button").on("click", Line.initialize);
-    $("#scanline-button").on("click", ScanLine.initialize);
-    $("#crop-button").on("click", Crop.initialize);
-    $("#translation-button").on("click", Translation.initialize);
-    $("#scale-button").on("click", Scale.initialize);
-    $("#rotation-button").on("click", Rotation.initialize);
-    $("#projection-button").on("click", Projection.initialize);
-    $("#perspective-button").on("click", Perspective.initialize);
-    $("#clear-button").on("click", Canvas.initialize);
+    $("#circle-button").removeAttr('disabled').on("click", Circle.initialize);
+    $("#flood-fill-button").removeAttr('disabled').on("click", FloodFill.initialize);
+    $("#curve-button").removeAttr('disabled').on("click", Curve.initialize);
+    $("#multi-line-button").removeAttr('disabled').on("click", Line.initialize);
+    $("#scanline-button").removeAttr('disabled').on("click", ScanLine.initialize);
+    $("#crop-button").removeAttr('disabled').on("click", Crop.initialize);
+    $("#translation-button").removeAttr('disabled').on("click", Translation.initialize);
+    $("#scale-button").removeAttr('disabled').on("click", Scale.initialize);
+    $("#rotation-button").removeAttr('disabled').on("click", Rotation.initialize);
+    $("#projection-button").removeAttr('disabled').on("click", Projection.initialize);
+    $("#perspective-button").removeAttr('disabled').on("click", Perspective.initialize);
+    $("#clear-button").removeAttr('disabled').on("click", Canvas.initialize);
 }

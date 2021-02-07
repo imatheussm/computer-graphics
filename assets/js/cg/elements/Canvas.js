@@ -124,6 +124,15 @@ export function paintPixel(coordinates, color, isPermanent) {
     }
 }
 
+export function erasePixel(coordinates) {
+    const [virtualX, virtualY] = coordinates;
+    const [realX, realY] = virtualToReal(coordinates);
+
+    if (virtualX >= 0 && virtualY >= 0 && virtualX < pixelMatrix[0].length && virtualY < pixelMatrix.length) {
+        pixelMatrix[virtualY][virtualX] = null;
+    }
+}
+
 export function getPixelColor(coordinates) {
     const [virtualX, virtualY] = coordinates;
 
@@ -150,14 +159,14 @@ function rgbToHex(red, green, blue) {
     return "#" + componentToHex(red) + componentToHex(green) + componentToHex(blue);
 }
 
-function virtualToReal(coordinates){
+function virtualToReal(coordinates) {
     const [realX, realY] = coordinates.map(x => parseInt(x.toString()) * pixelSize);
 
 
     return [realX, realY];
 }
 
-export function getColorPixel(coordinates){
+export function getColorPixel(coordinates) {
     const [realX, realY] = virtualToReal(coordinates);
 
     let imgData = CONTEXT.getImageData(realX, realY, 1, 1);
@@ -182,7 +191,7 @@ function drawTrimArea() {
     }
 }
 
-export function binCodePixel(coordinates){
+export function binCodePixel(coordinates) {
     let [x, y] = coordinates;
 
     let firstBit = y < heightOffset;
@@ -194,6 +203,6 @@ export function binCodePixel(coordinates){
     return [firstBit, secondBit, thirdBit, fourthBit];
 }
 
-export function isInPaintableArea(coordinates){
+export function isInPaintableArea(coordinates) {
     return ArrayMethods.isArrayEqual(binCodePixel(coordinates), [false, false, false, false]);
 }
