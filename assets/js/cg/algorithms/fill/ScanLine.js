@@ -2,6 +2,7 @@ import * as Canvas from "../../elements/Canvas.js";
 import * as Instructions from "../../elements/Instructions.js";
 import * as Array from "../../utilities/array.js";
 import * as colors from "../../constants/colors.js";
+import * as Line from "../draw/Line.js";
 
 let point, visitedPoints, criticalPoints, activeCriticalPoints, y_max, y_min;
 
@@ -14,43 +15,19 @@ export function initialize() {
 
 function borderEvent(event) {
     point = Canvas.getCoordinates(event);
-    visitedPoints = [];
-    getPolygonPoints(point, colors.RED);
+    visitedPoints = Line.visitedPoints
 
     getBoundingBox();
     scanLine();
 }
 
-function getPolygonPoints(point, edgeColor) {
-    let pixelColor = Canvas.getColorPixel(point);
-
-    let adjacency = [
-        [point[0] + 1, point[1] + 1],
-        [point[0] + 1, point[1] + 0],
-        [point[0] + 1, point[1] - 1],
-        [point[0] + 0, point[1] + 1],
-        [point[0] + 0, point[1] + 0],
-        [point[0] + 0, point[1] - 1],
-        [point[0] - 1, point[1] + 1],
-        [point[0] - 1, point[1] + 0],
-        [point[0] - 1, point[1] - 1],
-    ]
-
-    let isEdge = pixelColor === edgeColor;
-    let notVisited = Array.includesArray(visitedPoints, point) === false;
-
-    if (notVisited && isEdge) {
-        visitedPoints.push(point);
-        for (let p = 0; p < adjacency.length; p++) getPolygonPoints(adjacency[p], edgeColor);
-    }
-}
 
 function getInvSlope(p_aux, point){
     return (1.0*p_aux[0] - point[0]) / (1.0*p_aux[1] - point[1]);
 }
 
 function getBoundingBox(){
-    y_min = Canvas.virtualHeight - 1;
+    y_min = Canvas.virtualHeight;
     y_max = 0;
     criticalPoints = [];
     for (let i = 0; i < visitedPoints.length; i++) {
@@ -139,8 +116,11 @@ function scanLine(){
         for (let i=0; i < activeCriticalPoints.length; i += 2){
             let x_start  = Math.round(activeCriticalPoints[i].x_intersection);
             let x_end = Math.round(activeCriticalPoints[i+1].x_intersection);
-            for (let x = x_start; x <= x_end; x++){
-                Canvas.paintPixel([x, y], colors.GREEN);
+            for (let x = x_start; x < x_end; x++){
+                let pixel_color = Canvas.getColorPixel([x, y]);
+                if (pixel_color !== colors.RED) {
+                    Canvas.paintPixel([x, y], colors.GREEN);
+                }
             }
         }
 
