@@ -137,7 +137,7 @@ export function getPixelColor(coordinates) {
     const [virtualX, virtualY] = coordinates;
 
 
-    return pixelMatrix[virtualY, virtualX];
+    return pixelMatrix[virtualY][virtualX];
 }
 
 export function getCoordinates(event) {

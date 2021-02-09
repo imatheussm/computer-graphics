@@ -17,10 +17,12 @@ export function initialize() {
 function borderEvent(event) {
     point = Canvas.getCoordinates(event);
 
-    getPolygonPoints(point, colors.RED);
-    Canvas.paintPixel(point, colors.BLUE, false);
-    Instructions.showMessage("Click on a new point to translate the object.");
-    Canvas.CANVAS.off("click").on("click", newPointEvent);
+    if (Canvas.getPixelColor(point) !== null) {
+        getPolygonPoints(point, colors.RED);
+        Canvas.paintPixel(point, colors.BLUE, false);
+        Instructions.showMessage("Click on a new point to translate the object.");
+        Canvas.CANVAS.off("click").on("click", newPointEvent);
+    }
 }
 
 
