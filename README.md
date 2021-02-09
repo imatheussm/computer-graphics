@@ -7,3 +7,6 @@ This application was developed by the following authors:
  - Igor Matheus S. Moreira ([@imatheussm](https://github.com/imatheussm)); and
  - Renan F. Cunha ([@renan-cunha](https://github.com/renan-cunha)).
  
+## Requirements
+
+This application requires `jQuery` and `Math.js` to work. Such modules are already contained in this project, so that they remain unaffected by external issues. We thank the developers of these modules for making the development of this application easier.
