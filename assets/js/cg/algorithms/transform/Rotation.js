@@ -2,7 +2,6 @@ import * as Canvas from "../../elements/Canvas.js";
 import * as Instructions from "../../elements/Instructions.js";
 import * as colors from "../../constants/colors.js";
 import * as Line from "../draw/Line.js";
-import {transformVisitedPoints} from "../draw/Line.js";
 
 let point, countDigit, rotationDegrees, matrix, newPoints;
 
@@ -30,7 +29,7 @@ function getRotationDegreesEvent(event) {
         if (countDigit === 0) {
             rotationDegrees = 100 * digit;
         } else if (countDigit === 1) {
-            rotationDegrees += 10*digit;
+            rotationDegrees += 10 * digit;
         } else {
             rotationDegrees += digit;
             rotationDegrees = 0.0174533 * rotationDegrees;
@@ -47,8 +46,10 @@ function getRotationDegreesEvent(event) {
 function runRotation() {
     let [x0, y0] = Line.visitedPoints[0];
 
-    matrix = [[Math.cos(rotationDegrees), -Math.sin(rotationDegrees)],
-              [Math.sin(rotationDegrees), Math.cos(rotationDegrees)]];
+    matrix = [
+        [Math.cos(rotationDegrees), -Math.sin(rotationDegrees)],
+        [Math.sin(rotationDegrees),  Math.cos(rotationDegrees)]
+    ];
 
     for (let i = 0; i < Line.visitedPoints.length; i++)
         newPoints.push([Line.visitedPoints[i][0] - x0, Line.visitedPoints[i][1] - y0]);
@@ -71,7 +72,7 @@ function draw() {
         Line.erase(previousPoint, nextPoint);
     }
 
-    transformVisitedPoints(scaledCoordinates);
+    Line.transformVisitedPoints(scaledCoordinates);
 
     for (let i = 0; i < scaledCoordinates.length; i++) {
         let previousPoint = scaledCoordinates[i];

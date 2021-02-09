@@ -3,20 +3,16 @@ import * as Instructions from "../../elements/Instructions.js";
 import * as colors from "../../constants/colors.js";
 import * as Line from "../draw/Line.js";
 
-let point, visitedPoints, criticalPoints, activeCriticalPoints, yMax, yMin;
+let visitedPoints, criticalPoints, activeCriticalPoints, yMax, yMin;
 
 export function initialize() {
-    $(document).off("keypress");
-    Canvas.CANVAS.off("click").on("click", borderEvent);
-    Instructions.showMessage("Choose a POINT of the BORDER of the object to fill.");
-}
-
-function borderEvent(event) {
-    point = Canvas.getCoordinates(event);
-    visitedPoints = Line.visitedPoints
+    visitedPoints = Line.visitedPoints;
 
     getBoundingBox();
     scanLine();
+
+    $(document).off("keypress");
+    Canvas.CANVAS.off("click");
 }
 
 
@@ -59,22 +55,24 @@ function getBoundingBox() {
 }
 
 function bubbleSortPoint(inputArr) {
-    let len = inputArr.length;
+    let len = inputArr.length, swapped, valueI, valueIPlus, tmp;
 
-    let swapped;
     do {
         swapped = false;
+
         for (let i = 0; i < len - 1; i++) {
-            let valueI = inputArr[i].x_intersection;
-            let valueIPlus = inputArr[i+1].x_intersection;
+            valueI = inputArr[i].x_intersection;
+            valueIPlus = inputArr[i+1].x_intersection;
+
             if (valueI > valueIPlus) {
-                let tmp = inputArr[i];
+                tmp = inputArr[i];
                 inputArr[i] = inputArr[i + 1];
                 inputArr[i + 1] = tmp;
                 swapped = true;
             }
         }
-    } while (swapped);
+    } while (swapped === true);
+
     return inputArr;
 }
 
