@@ -1,5 +1,4 @@
 import * as Canvas from "../../elements/Canvas.js";
-import * as Instructions from "../../elements/Instructions.js";
 import * as colors from "../../constants/colors.js";
 import * as Line from "../draw/Line.js";
 

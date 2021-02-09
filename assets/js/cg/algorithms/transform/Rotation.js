@@ -1,42 +1,32 @@
 import * as Canvas from "../../elements/Canvas.js";
 import * as Instructions from "../../elements/Instructions.js";
-import * as colors from "../../constants/colors.js";
 import * as Line from "../draw/Line.js";
 
-let point, countDigit, rotationDegrees, matrix, newPoints;
+let countDigit, rotationDegrees, matrix, newPoints;
 
 export function initialize() {
-    $(document).off("keypress");
-    Canvas.CANVAS.off("click").on("click", borderEvent);
-    Instructions.showMessage("Click in a point of the object to fix it.");
-}
-
-function borderEvent(event) {
-    point = Canvas.getCoordinates(event);
     countDigit = 0;
+    rotationDegrees = 0;
     newPoints = [];
 
-    Canvas.paintPixel(point, colors.BLUE, false);
-    Instructions.showMessage("Type three numbers to indicate the rotation degree");
+    $(document).off("keypress").on("keypress", getRotationDegreesEvent);
     Canvas.CANVAS.off("click");
-    $(document).on("keypress", getRotationDegreesEvent);
+    Instructions.showMessage("Type three numbers to indicate the rotation degree");
 }
 
 function getRotationDegreesEvent(event) {
     if (event.which >= 48 && event.which <= 57) {
         let digit = event.which - 48;
 
-        if (countDigit === 0) {
-            rotationDegrees = 100 * digit;
-        } else if (countDigit === 1) {
-            rotationDegrees += 10 * digit;
-        } else {
+        if (countDigit === 0) rotationDegrees = 100 * digit;
+        else if (countDigit === 1) rotationDegrees += 10 * digit;
+        else {
             rotationDegrees += digit;
-            rotationDegrees = 0.0174533 * rotationDegrees;
-            $(document).off("keypress");
-            Instructions.showMessage("Click in a point of the object to fix it.");
-            Canvas.CANVAS.off("click").on("click", borderEvent);
+            rotationDegrees *= 0.0174533;
+
             runRotation();
+
+            return initialize();
         }
 
         countDigit += 1;
