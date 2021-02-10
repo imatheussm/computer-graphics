@@ -12,8 +12,10 @@ export function initialize() {
     point = null;
     visitedPoints = [];
 
-    Canvas.CANVAS.off("click").on("click", handleClick);
-    $(document).off("keypress").off("keyup").on("keyup", handleKeyUp);
+
+    Canvas.disableEvents();
+    Canvas.CANVAS.on("click", handleClick);
+    $(document).on("keyup", handleKeyUp);
     Instructions.showMessage("Choose at least 2 points to draw lines on the screen. Press ENTER to end a polyline.");
 }
 

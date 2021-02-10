@@ -20,6 +20,7 @@ let initialCoordinates, finalCoordinates, side, temporaryCube, threeDimensionalC
     rotationType, rotationMatrix;
 
 export function initialize(tool, type) {
+    Canvas.disableEvents();
     Canvas.CANVAS.on("click", function(event) { sideEvent(tool, type, event); });
     Instructions.showMessage("Choose a POINT to be the UPPER-LEFT end of the cube.");
 }

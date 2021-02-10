@@ -9,8 +9,8 @@ export function initialize() {
     visitedPoints = [];
     queue = [];
 
-    $(document).off("keypress");
-    Canvas.CANVAS.off("click").on("click", borderEvent);
+    Canvas.disableEvents();
+    Canvas.CANVAS.on("click", borderEvent);
     Instructions.showMessage("Click on the point of an object.");
 }
 

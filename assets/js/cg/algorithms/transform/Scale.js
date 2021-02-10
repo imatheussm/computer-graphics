@@ -1,21 +1,25 @@
 import * as Canvas from "../../elements/Canvas.js";
 import * as Instructions from "../../elements/Instructions.js";
-import * as colors from "../../constants/colors.js";
-import {paintPixel} from "../../elements/Canvas.js";
+
 import * as Line from "../draw/Line.js";
 
-let point, matrix, newPoints, xScaleSign, yScaleSign, xScale, yScale;
+import * as array from "../../utilities/array.js";
+import * as colors from "../../constants/colors.js";
+
+let point, matrix, newPoints, xScaleSign, yScaleSign, xScale, yScale, scaledCoordinates;
 
 export function initialize() {
-    $(document).off("keypress");
-    Canvas.CANVAS.off("click").on("click", borderEvent);
+    Canvas.disableEvents();
+    Canvas.CANVAS.on("click", borderEvent);
     Instructions.showMessage("Click in a point of the object to fix it.");
 }
 
 function borderEvent(event) {
     point = Canvas.getCoordinates(event);
     newPoints = [];
-    paintPixel(point, colors.BLUE, false);
+
+
+    Canvas.paintPixel(point, colors.BLUE, false);
     Instructions.showMessage("Press number 0 if the scale on the X axis is negative, and press 1 if is positive.");
     Canvas.CANVAS.off("click")
     $(document).on("keypress", xScaleSignEvent);
@@ -23,21 +27,19 @@ function borderEvent(event) {
 
 function xScaleSignEvent(event) {
     if (event.which === 48 || event.which === 49) {
-        if (event.which === 48){
-            xScaleSign = -1;
-        } else {
-            xScaleSign = 1;
-        }
+        if (event.which === 48) xScaleSign = -1;
+        else xScaleSign = 1;
+
         $(document).off("keypress");
         $(document).on("keypress", xScaleMagnitudeEvent);
-        Instructions.showMessage("Pres on a key [1-9] to define the magnitue of the scale on the X axis.");
+        Instructions.showMessage("Pres on a key [1-9] to define the magnitude of the scale on the X axis.");
     }
 }
 
 function xScaleMagnitudeEvent(event) {
-
     if (event.which >= 49 && event.which <= 57) {
         xScale = event.which - 48;
+
         $(document).off("keypress").on("keypress", yScaleSignEvent);
         Instructions.showMessage("Press number 0 if the scale on the Y axis is negative, and press 1 if is positive.");
     }
@@ -45,12 +47,10 @@ function xScaleMagnitudeEvent(event) {
 
 function yScaleSignEvent(event) {
     if (event.which === 48 || event.which === 49) {
-        if (event.which === 48){
-            yScaleSign = -1;
-        } else {
-            yScaleSign = 1;
-        }
-        Instructions.showMessage("Pres on a key [1-9] to define the magnitue of the scale on the Y axis.");
+        if (event.which === 48) yScaleSign = -1;
+        else yScaleSign = 1;
+
+        Instructions.showMessage("Pres on a key [1-9] to define the magnitude of the scale on the Y axis.");
         $(document).off("keypress").on("keypress", yScaleMagnitudeEvent);
     }
 }
@@ -58,21 +58,18 @@ function yScaleSignEvent(event) {
 function yScaleMagnitudeEvent(event) {
     if (event.which >= 49 && event.which <= 57) {
         yScale = event.which - 48;
-        $(document).off("keypress");
-        Canvas.CANVAS.off("click").on("click", borderEvent);
+
         runScale();
-        Instructions.showMessage("Click in a point of the object to fix it.");
+        initialize();
     }
 }
 
 
 function runScale() {
     let fixed_point = Line.visitedPoints[0];
-    let x0 = fixed_point[0];
-    let y0 = fixed_point[1];
+    let [x0, y0] = fixed_point;
+    let [scaleX, scaleY] = [xScale * xScaleSign, yScale * yScaleSign];
 
-    let scaleX = xScale * xScaleSign;
-    let scaleY = yScale * yScaleSign;
     matrix = [[scaleX, 0], [0, scaleY]];
 
     for (let i = 0; i < Line.visitedPoints.length; i++) {
@@ -88,37 +85,20 @@ function runScale() {
 }
 
 function draw() {
-    let scaledCoordinates = [];
-    for (let i=0; i < newPoints.length; i++) {
-        let point = newPoints[i];
-        scaledCoordinates.push(matrixMult(point, matrix));
-    }
+    scaledCoordinates = array.multiplyAndAddFixedPoint(newPoints, matrix, Line.visitedPoints[0]);
 
-    //erase previous points
-    for (let i=0; i <Line.visitedPoints.length; i++) {
+    for (let i = 0; i < Line.visitedPoints.length; i++) {
         let previousPoint = Line.visitedPoints[i];
-        let nextPoint = Line.visitedPoints[(i+1) % Line.visitedPoints.length];
-        Line.draw(previousPoint, nextPoint, colors.BLACK);
+        let nextPoint = Line.visitedPoints[(i + 1) % Line.visitedPoints.length];
+        Line.erase(previousPoint, nextPoint);
     }
 
 
-    for (let i=0; i < scaledCoordinates.length; i++) {
+    for (let i = 0; i < scaledCoordinates.length; i++) {
         let previousPoint = scaledCoordinates[i];
-        console.log(previousPoint);
-        let nextPoint = scaledCoordinates[(i+1) % scaledCoordinates.length];
+        let nextPoint = scaledCoordinates[(i + 1) % scaledCoordinates.length];
         Line.draw(previousPoint, nextPoint);
     }
-}
 
-function matrixMult(point, matrix) {
-    let result = [0,0];
-    let fixedPoint = Line.visitedPoints[0];
-
-    for (let i=0; i<2; i++) {
-        for (let j=0;j<2; j++) {
-            result[i] += matrix[i][j] * point[j];
-        }
-        result[i] += fixedPoint[i];
-    }
-    return result;
+    Canvas.refresh();
 }

@@ -20,8 +20,8 @@ export function initialize() {
     controlPoints = [];
 
 
-    $(document).off("keypress");
-    Canvas.CANVAS.off("click").on("click", initialPointEvent);
+    Canvas.disableEvents();
+    Canvas.CANVAS.on("click", initialPointEvent);
     Instructions.showMessage("Choose the INITIAL point of the curve.");
 }
 

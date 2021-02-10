@@ -6,7 +6,8 @@ import * as colors from "../../constants/colors.js";
 let center, radius;
 
 export function initialize() {
-    Canvas.CANVAS.off("click").on("click", centerEvent);
+    Canvas.disableEvents();
+    Canvas.CANVAS.on("click", centerEvent);
     Instructions.showMessage("Choose a point to define the CENTER of the circle.");
 }
 

@@ -35,3 +35,14 @@ export function includesArray(upperArray, lowerArray) {
 
     return false;
 }
+
+export function multiplyAndAddFixedPoint(arrayOne, arrayTwo, fixedArray) {
+    let multipliedArray = math.multiply(arrayOne, arrayTwo);
+
+
+    return math.concat(
+        math.add(math.column(multipliedArray, 0), fixedArray[0]),
+        math.add(math.column(multipliedArray, 1), fixedArray[1]),
+        1
+    );
+}

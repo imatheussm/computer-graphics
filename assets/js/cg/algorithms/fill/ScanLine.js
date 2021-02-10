@@ -1,17 +1,17 @@
 import * as Canvas from "../../elements/Canvas.js";
-import * as colors from "../../constants/colors.js";
+import * as Instructions from "../../elements/Instructions.js";
+
 import * as Line from "../draw/Line.js";
 
-let visitedPoints, criticalPoints, activeCriticalPoints, yMax, yMin;
+import * as colors from "../../constants/colors.js";
+
+let criticalPoints, activeCriticalPoints, yMax, yMin;
 
 export function initialize() {
-    visitedPoints = Line.visitedPoints;
-
+    Canvas.disableEvents();
     getBoundingBox();
     scanLine();
-
-    $(document).off("keypress");
-    Canvas.CANVAS.off("click");
+    Instructions.showMessage("Select an algorithm to continue.");
 }
 
 
@@ -23,15 +23,15 @@ function getBoundingBox() {
     yMin = Canvas.virtualHeight;
     yMax = 0;
     criticalPoints = [];
-    for (let i = 0; i < visitedPoints.length; i++) {
-        let point = visitedPoints[i];
+    for (let i = 0; i < Line.visitedPoints.length; i++) {
+        let point = Line.visitedPoints[i];
         let y = point[1], x = point[0];
         if (y < yMin) {
             yMin = y;
         } else if (y > yMax) {
             yMax = y;
         }
-        let pAux = visitedPoints[(i + 1) % visitedPoints.length];
+        let pAux = Line.visitedPoints[(i + 1) % Line.visitedPoints.length];
         if (y < pAux[1]) {
             criticalPoints.push({
                 "index": i,
@@ -40,7 +40,7 @@ function getBoundingBox() {
                 "inv_slope": getInvSlope(pAux, point)
             })
         }
-        pAux = visitedPoints[(i - 1 + visitedPoints.length) % visitedPoints.length];
+        pAux = Line.visitedPoints[(i - 1 + Line.visitedPoints.length) % Line.visitedPoints.length];
         if (y < pAux[1]) {
             criticalPoints.push({
                 "index": i,
@@ -77,48 +77,50 @@ function bubbleSortPoint(inputArr) {
 
 function scanLine() {
     activeCriticalPoints = [];
-    for (let y = yMin; y <= yMax; y++) {
 
-        //update x_intersection on activePoints
-        for (let i = 0; i < activeCriticalPoints.length; i++) {
-            let point = activeCriticalPoints[i];
-            point.x_intersection += point.inv_slope;
-            activeCriticalPoints[i] = point;
-        }
+    if (Line.visitedPoints !== undefined && Canvas.isPainted(Line.visitedPoints[0], colors.RED) === true) {
+        for (let y = yMin; y <= yMax; y++) {
 
-        //Add lines with critical points for the given y
-        for (let i = 0; i < criticalPoints.length; i++) {
-            let point = criticalPoints[i];
-            if (visitedPoints[point.index][1] === y) {
-                activeCriticalPoints.push(point);
+            //update x_intersection on activePoints
+            for (let i = 0; i < activeCriticalPoints.length; i++) {
+                let point = activeCriticalPoints[i];
+                point.x_intersection += point.inv_slope;
+                activeCriticalPoints[i] = point;
             }
-        }
 
-        //Remove points with y equal to y_max
-        for (let i = activeCriticalPoints.length - 1; i >= 0; i--) {
-            let point = activeCriticalPoints[i];
-            let index = (point.index + point.dir + visitedPoints.length) % visitedPoints.length;
-            let pMax = visitedPoints[index];
-            if (pMax[1] === y) {
-                activeCriticalPoints.splice(i, 1);
+            //Add lines with critical points for the given y
+            for (let i = 0; i < criticalPoints.length; i++) {
+                let point = criticalPoints[i];
+                if (Line.visitedPoints[point.index][1] === y) {
+                    activeCriticalPoints.push(point);
+                }
             }
-        }
 
-        //Order active points based on the x for the given y
-        bubbleSortPoint(activeCriticalPoints);
+            //Remove points with y equal to y_max
+            for (let i = activeCriticalPoints.length - 1; i >= 0; i--) {
+                let point = activeCriticalPoints[i];
+                let index = (point.index + point.dir + Line.visitedPoints.length) % Line.visitedPoints.length;
+                let pMax = Line.visitedPoints[index];
+                if (pMax[1] === y) {
+                    activeCriticalPoints.splice(i, 1);
+                }
+            }
 
-        //Paint between each pair of active points
-        for (let i = 0; i < activeCriticalPoints.length; i += 2) {
-            let xStart = Math.round(activeCriticalPoints[i].x_intersection);
-            let xEnd = Math.round(activeCriticalPoints[i+1].x_intersection);
-            for (let x = xStart; x < xEnd; x++) {
-                let pixelColor = Canvas.getColorPixel([x, y]);
-                if (pixelColor !== colors.RED) {
-                    Canvas.paintPixel([x, y], colors.GREEN, true);
+            //Order active points based on the x for the given y
+            bubbleSortPoint(activeCriticalPoints);
+
+            //Paint between each pair of active points
+            for (let i = 0; i < activeCriticalPoints.length; i += 2) {
+                let xStart = Math.round(activeCriticalPoints[i].x_intersection);
+                let xEnd = Math.round(activeCriticalPoints[i + 1].x_intersection);
+                for (let x = xStart; x < xEnd; x++) {
+                    let pixelColor = Canvas.getColorPixel([x, y]);
+                    if (pixelColor !== colors.RED) {
+                        Canvas.paintPixel([x, y], colors.GREEN, true);
+                    }
                 }
             }
         }
-
     }
 
 }

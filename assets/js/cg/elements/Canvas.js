@@ -17,11 +17,17 @@ let virtualPaintHeight, virtualPaintWidth;
 
 export function initialize() {
     initializePixelMatrix();
-    refresh()
+    refresh();
+    disableEvents();
 
-    CANVAS.off("click").off("keypress").off("keyup");
+
     Instructions.showMessage("Select an algorithm to continue.");
 
+}
+
+export function disableEvents() {
+    $(document).off("keypress").off("keyup");
+    CANVAS.off("click");
 }
 
 export function refresh(size = null) {

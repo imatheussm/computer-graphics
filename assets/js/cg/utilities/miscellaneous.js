@@ -1,4 +1,4 @@
-export function getIntersectionPoint(borderLine, realLine){
+export function getIntersectionPoint(borderLine, realLine) {
     let x1 = realLine[0][0];
     let x2 = realLine[1][0];
     let y1 = realLine[0][1];
@@ -9,7 +9,7 @@ export function getIntersectionPoint(borderLine, realLine){
         xi = borderLine[0][0];
 
         yi = (xi - x1)*(y2-y1)/(x2-x1) + y1;
-    } else if (borderLine[0][1] === borderLine[1][1]){
+    } else if (borderLine[0][1] === borderLine[1][1]) {
         yi = borderLine[0][1];
         xi = (yi - y1)*(x2-x1)/(y2-y1) + x1;
     }

@@ -10,8 +10,8 @@ export function initialize() {
     queue = [];
 
 
-    $(document).off("keypress");
-    Canvas.CANVAS.off("click").on("click", positionEvent);
+    Canvas.disableEvents();
+    Canvas.CANVAS.on("click", positionEvent);
     Instructions.showMessage("Choose a POINT to fill.");
 }
 

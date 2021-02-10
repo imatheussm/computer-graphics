@@ -2,16 +2,22 @@ import * as Canvas from "../../elements/Canvas.js";
 import * as Instructions from "../../elements/Instructions.js";
 import * as Line from "../draw/Line.js";
 
-let countDigit, rotationDegrees, matrix, newPoints;
+import * as array from "../../utilities/array.js";
+import * as colors from "../../constants/colors.js";
+
+let countDigit, rotationDegrees, matrix, newPoints, scaledCoordinates;
 
 export function initialize() {
     countDigit = 0;
     rotationDegrees = 0;
     newPoints = [];
 
-    $(document).off("keypress").on("keypress", getRotationDegreesEvent);
-    Canvas.CANVAS.off("click");
-    Instructions.showMessage("Type three numbers to indicate the rotation degree");
+
+    if (Line.visitedPoints !== undefined && Canvas.isPainted(Line.visitedPoints[0], colors.RED)) {
+        Canvas.disableEvents();
+        $(document).on("keypress", getRotationDegreesEvent);
+        Instructions.showMessage("Type three numbers to indicate the rotation degree");
+    }
 }
 
 function getRotationDegreesEvent(event) {
@@ -48,15 +54,9 @@ function runRotation() {
 }
 
 function draw() {
-    let scaledCoordinates = [];
+    scaledCoordinates = array.multiplyAndAddFixedPoint(newPoints, matrix, Line.visitedPoints[0]);
 
-    for (let i = 0; i < newPoints.length; i++) {
-        let point = newPoints[i];
-
-        scaledCoordinates.push(matrixMult(point, matrix));
-    }
-
-    for (let i = 0; i <Line.visitedPoints.length; i++) {
+    for (let i = 0; i < Line.visitedPoints.length; i++) {
         let previousPoint = Line.visitedPoints[i];
         let nextPoint = Line.visitedPoints[(i + 1) % Line.visitedPoints.length];
         Line.erase(previousPoint, nextPoint);
@@ -73,14 +73,16 @@ function draw() {
         nextPoint[1] = Math.round(nextPoint[1]);
         Line.draw(previousPoint, nextPoint);
     }
+
+    Canvas.refresh();
 }
 
 function matrixMult(point, matrix) {
     let result = [0,0];
     let fixedPoint = Line.visitedPoints[0];
 
-    for (let i = 0; i<2; i++) {
-        for (let j = 0; j<2; j++) {
+    for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < 2; j++) {
             result[i] += matrix[i][j] * point[j];
         }
         result[i] += fixedPoint[i];

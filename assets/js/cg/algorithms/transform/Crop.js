@@ -7,7 +7,8 @@ import * as Util from "../../utilities/miscellaneous.js";
 let topLeftPoint, bottomRightPoint;
 
 export function initialize() {
-    Canvas.CANVAS.off("click").on("click", topLeftEvent);
+    Canvas.disableEvents();
+    Canvas.CANVAS.on("click", topLeftEvent);
     Instructions.showMessage("Choose a point to define the TOP-LEFT border of the crop area.");
 }
 
