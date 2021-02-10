@@ -16,7 +16,7 @@ export function initialize() {
     if (Line.visitedPoints !== undefined && Canvas.isPainted(Line.visitedPoints[0], colors.RED)) {
         Canvas.disableEvents();
         $(document).on("keypress", getRotationDegreesEvent);
-        Instructions.showMessage("Type three numbers to indicate the rotation degree");
+        Instructions.showMessage("Type three numbers to indicate the rotation degree.");
     }
 }
 
