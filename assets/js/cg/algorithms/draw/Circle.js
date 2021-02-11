@@ -30,7 +30,7 @@ function radiusEvent(event) {
 
     draw();
     Canvas.refresh();
-    Canvas.initialize();
+    initialize();
 }
 
 function drawEight(x, y) {
