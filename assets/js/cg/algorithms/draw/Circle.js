@@ -23,16 +23,14 @@ function centerEvent(event) {
 
 function radiusEvent(event) {
     const border = Canvas.getCoordinates(event);
-    const x_dist = Math.pow(center[0] - border[0], 2);
-    const y_dist = Math.pow(center[1] - border[1], 2);
-    radius = parseInt(Math.sqrt(x_dist + y_dist).toString());
+    const xDist = Math.pow(center[0] - border[0], 2);
+    const yDist = Math.pow(center[1] - border[1], 2);
+    radius = parseInt(Math.sqrt(xDist + yDist).toString());
 
 
     draw();
     Canvas.refresh();
-
-    Canvas.CANVAS.off("click").on("click", centerEvent);
-    Instructions.showMessage("Choose a point to define the CENTER of the circle.");
+    Canvas.initialize();
 }
 
 function drawEight(x, y) {
@@ -54,9 +52,8 @@ function draw() {
         drawEight(x, y);
         y++;
 
-        if (error < 0) {
-            error += 2 * y + 1;
-        } else {
+        if (error < 0) error += 2 * y + 1;
+        else {
             x--;
             error += 2 * (y - x + 1);
         }

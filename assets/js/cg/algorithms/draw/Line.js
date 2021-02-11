@@ -15,7 +15,7 @@ export function initialize() {
 
     Canvas.disableEvents();
     Canvas.CANVAS.on("click", handleClick);
-    $(document).on("keyup", handleKeyUp);
+    $(document).on("keyup", completeLines);
     Instructions.showMessage("Choose at least 2 points to draw lines on the screen. Press ENTER to end a polyline.");
 }
 
@@ -24,7 +24,7 @@ function handleClick(event) {
         point = Canvas.getCoordinates(event);
 
 
-        Canvas.paintPixel(point, colors.BLUE);
+        Canvas.paintPixel(point, colors.BLUE, false);
 
     } else {
         Canvas.paintPixel(point, colors.RED, true);
@@ -39,11 +39,11 @@ function handleClick(event) {
             point = newPoint;
         }
 
-        Canvas.paintPixel(newPoint, colors.BLUE);
+        Canvas.paintPixel(newPoint, colors.BLUE, false);
     }
 }
 
-function cohenSutherland(pointA, pointB){
+function cohenSutherland(pointA, pointB) {
     let binCodePointA = Canvas.binCodePixel(pointA);
     let binCodePointB = Canvas.binCodePixel(pointB);
     let or = Array.arrayOr(binCodePointA, binCodePointB);
@@ -58,19 +58,16 @@ function cohenSutherland(pointA, pointB){
         Canvas.refresh();
         initialize();
     } else {
-        let firstBitDifference = getFirstBitDifference(binCodePointA,
-                                                       binCodePointB);
+        let firstBitDifference = getFirstBitDifference(binCodePointA, binCodePointB);
         let borderLine = getBorderLine(firstBitDifference);
-        let intersectionPoint = Util.getIntersectionPoint(borderLine, [pointA,
-                                                                          pointB])
-        if (Canvas.isInPaintableArea(intersectionPoint)) {
+        let intersectionPoint = Util.getIntersectionPoint(borderLine, [pointA, pointB])
+
+
+        if (Canvas.isInPaintableArea(intersectionPoint))
             Canvas.paintPixel(intersectionPoint, colors.RED, true);
-        }
-        if (binCodePointA[firstBitDifference-1] === false) {
-            cohenSutherland(pointA, intersectionPoint);
-        } else {
-            cohenSutherland(intersectionPoint, pointB);
-        }
+
+        if (binCodePointA[firstBitDifference - 1] === false) cohenSutherland(pointA, intersectionPoint);
+        else cohenSutherland(intersectionPoint, pointB);
 
     }
 }
@@ -100,26 +97,26 @@ function getBorderLine(diffBit) {
 }
 
 
-function getFirstBitDifference(list1, list2){
-    for (let i = 0; i < list1.length; i++) if (list1[i] || list2[i]) return i + 1;
+function getFirstBitDifference(listOne, listTwo) {
+    for (let i = 0; i < listOne.length; i++) if (listOne[i] || listTwo[i]) return i + 1;
 
     return false;
 }
 
-function handleKeyUp(event) {
+function completeLines(event) {
     if (event.keyCode === 13) point = null;
     Canvas.refresh();
 }
 
 export function draw(initialCoordinates, finalCoordinates, color = colors.RED, isPermanent = true) {
-    return draw_or_erase(true, initialCoordinates, finalCoordinates, color, isPermanent);
+    return drawOrErase(true, initialCoordinates, finalCoordinates, color, isPermanent);
 }
 
 export function erase(initialCoordinates, finalCoordinates) {
-    return draw_or_erase(false, initialCoordinates, finalCoordinates, null, null);
+    return drawOrErase(false, initialCoordinates, finalCoordinates, null, null);
 }
 
-function draw_or_erase(shouldDraw, initialCoordinates, finalCoordinates, color, isPermanent) {
+function drawOrErase(shouldDraw, initialCoordinates, finalCoordinates, color, isPermanent) {
     [x0, y0] = initialCoordinates.map(c => parseInt(c));
     [x1, y1] = finalCoordinates.map(c => parseInt(c));
 

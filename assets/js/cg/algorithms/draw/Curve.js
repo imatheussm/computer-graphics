@@ -4,17 +4,9 @@ import * as Line from "./Line.js";
 
 import * as colors from "../../constants/colors.js";
 
-let initialCoordinates, finalCoordinates;
-let controlPoints, numLines;
-let t;
-
-Math.vectorAddition = function(firstVector, secondVector) {
-    return firstVector.map((x, i) => x + secondVector[i])
-}
-
-Math.scalarMultiplication = function(vector, scalar) {
-    return vector.map(x => x * scalar);
-}
+let initialCoordinates, finalCoordinates,
+    controlPoints, numLines,
+    t;
 
 export function initialize() {
     controlPoints = [];
@@ -61,7 +53,6 @@ function controlPointsEvent(event) {
 
     Canvas.paintPixel(point, colors.BLUE, false);
     controlPoints.push(point);
-    console.log(`controlPoints: ${controlPoints}`)
 }
 
 function belzierPoint(t) {
@@ -70,10 +61,11 @@ function belzierPoint(t) {
 
     for (let r = 1; r <= degree; r++) {
         for (let i = 0; i <= degree - r; i++) {
-            const firstMultiplication = Math.scalarMultiplication(controlPoints[i], (1.0 - t));
-            const secondMultiplication = Math.scalarMultiplication(controlPoints[i + 1], t);
+            const firstMultiplication = math.multiply(controlPoints[i], (1.0 - t));
+            const secondMultiplication = math.multiply(controlPoints[i + 1], t);
 
-            controlPoints[i] = Math.vectorAddition(firstMultiplication, secondMultiplication);
+
+            controlPoints[i] = math.add(firstMultiplication, secondMultiplication);
         }
     }
 
@@ -82,6 +74,7 @@ function belzierPoint(t) {
 
 function draw() {
     numLines = controlPoints.length / 2 + 2;
+
 
     for (let i = 1; i <= numLines; i++) {
         t = (1.0 / numLines) * i;

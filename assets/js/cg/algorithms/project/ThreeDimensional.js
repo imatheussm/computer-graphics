@@ -75,11 +75,6 @@ function project(tool, initialCoordinates, threeDimensionalCube, rotationMatrix)
         twoDimensionalCube = temporaryCube;
     }
     else if (tool === "perspective") {
-        twoDimensionalCube = null;
-
-        console.log("perspective!");
-        console.log(temporaryCube);
-
         twoDimensionalCube = math.divide(math.column(temporaryCube, 0), temporaryCube.get([3, 0]));
 
         for (let i = 1; i < math.size(temporaryCube)._data[1]; i++) {
@@ -89,8 +84,6 @@ function project(tool, initialCoordinates, threeDimensionalCube, rotationMatrix)
                 1
             )
         }
-
-        console.log(twoDimensionalCube);
     }
 
     twoDimensionalCube = math.concat(math.row(twoDimensionalCube, 0), math.row(twoDimensionalCube, 1), 0);
