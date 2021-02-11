@@ -60,6 +60,7 @@ function yScaleMagnitudeEvent(event) {
         yScale = event.which - 48;
 
         runScale();
+        draw();
         initialize();
     }
 }
@@ -80,8 +81,6 @@ function runScale() {
         newPoint[1] -= y0;
         newPoints.push(newPoint);
     }
-
-    draw();
 }
 
 function draw() {
