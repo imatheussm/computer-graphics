@@ -29,7 +29,7 @@ function getBoundingBox() {
         let y = point[1], x = point[0];
 
         if (y < yMin) yMin = y;
-        else if (y > yMax) yMax = y;
+        if (y > yMax) yMax = y;
 
         let pAux = Line.visitedPoints[(i + 1) % Line.visitedPoints.length];
 
