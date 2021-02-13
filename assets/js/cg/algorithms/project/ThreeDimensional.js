@@ -71,19 +71,15 @@ function drawEvent(tool, type, event) {
 function project(tool, initialCoordinates, threeDimensionalCube, rotationMatrix) {
     temporaryCube = math.multiply(rotationMatrix, threeDimensionalCube);
 
-    if (tool === "projection") {
-        twoDimensionalCube = temporaryCube;
-    }
+    if (tool === "projection") twoDimensionalCube = temporaryCube;
     else if (tool === "perspective") {
         twoDimensionalCube = math.divide(math.column(temporaryCube, 0), temporaryCube.get([3, 0]));
 
-        for (let i = 1; i < math.size(temporaryCube)._data[1]; i++) {
-            twoDimensionalCube = math.concat(
-                twoDimensionalCube,
-                math.divide(math.column(temporaryCube, i), temporaryCube.get([3, i])),
-                1
-            )
-        }
+        for (let i = 1; i < math.size(temporaryCube)._data[1]; i++) twoDimensionalCube = math.concat(
+            twoDimensionalCube,
+            math.divide(math.column(temporaryCube, i), temporaryCube.get([3, i])),
+            1
+        )
     }
 
     twoDimensionalCube = math.concat(math.row(twoDimensionalCube, 0), math.row(twoDimensionalCube, 1), 0);

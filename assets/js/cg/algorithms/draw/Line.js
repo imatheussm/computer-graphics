@@ -120,15 +120,13 @@ function drawOrErase(shouldDraw, initialCoordinates, finalCoordinates, color, is
     [x0, y0] = initialCoordinates.map(c => parseInt(c));
     [x1, y1] = finalCoordinates.map(c => parseInt(c));
 
-    [deltaX, deltaY] = [Math.abs(x1 - x0), Math.abs(y1 - y0)];
+    [deltaX,  deltaY]  = [Math.abs(x1 - x0), Math.abs(y1 - y0)];
     [signalX, signalY] = [(x0 < x1 ? 1 : -1), (y0 < y1 ? 1 : -1)];
 
     error = deltaX - deltaY;
 
 
-    while (true) {
-        if ((x0 === x1) && (y0 === y1)) break;
-
+    while (x0 !== x1 || y0 !== y1) {
         twoTimesError = 2 * error;
 
         if (twoTimesError > -deltaY) { error -= deltaY; x0 += signalX; }
