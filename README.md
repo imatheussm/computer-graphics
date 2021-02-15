@@ -1,6 +1,6 @@
 # computer-graphics
 
-A basic JavaScript application which allows the user to use some computer-graphics-related algorithms, (e.g., Bresenham, ScanLine). You can see how this application works by [clicking here](https://imatheussm.github.io/computer-graphics/index.html).
+A basic JavaScript application which allows the user to use some computer-graphics-related algorithms, (e.g., Bresenham, ScanLine). You can see this application working by [clicking here](https://imatheussm.github.io/computer-graphics/index.html).
 
 This application was developed by the following authors:
 
