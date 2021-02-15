@@ -10,3 +10,7 @@ This application was developed by the following authors:
 ## Requirements
 
 This application requires `jQuery` and `Math.js` to work. Such modules are already contained in this project, so that they remain unaffected by external issues. We thank the developers of these modules for making the development of this application easier.
+
+## Presentation video (only in Brazilian Portuguese)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IRqALQRtrgk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
