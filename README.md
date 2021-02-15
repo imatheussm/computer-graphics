@@ -13,4 +13,4 @@ This application requires `jQuery` and `Math.js` to work. Such modules are alrea
 
 ## Presentation video (only in Brazilian Portuguese)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/IRqALQRtrgk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![computer-graphics application presentation](https://img.youtube.com/vi/IRqALQRtrgk/0.jpg)](https://www.youtube.com/watch?v=IRqALQRtrgk)
